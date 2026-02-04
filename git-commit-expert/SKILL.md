@@ -1,7 +1,7 @@
 ---
 name: git-commit-expert
 description: A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 ---
 
@@ -26,6 +26,17 @@ If instructions are vague, **ASK** the user:
 *   "Should this be a single commit or split into logical parts?"
 *   "Are there specific scope requirements for this project?"
 *   "Would you like me to run tests/linting before committing?"
+
+#### Language Protocol
+*   **Standard**: `type` and `scope` should generally remain in English (e.g., `feat`, `fix`) to maintain tool compatibility.
+*   **Subject/Body**:
+    *   If the user prompts in English -> Use English.
+    *   If the user prompts in another language (e.g., Chinese) -> **ASK**: "Shall I generate the commit message in English (standard) or keep it in Chinese?"
+    *   *Context Awareness*: Check `git log` briefly. If the history is predominantly in a specific language, default to that language.
+
+#### Sample Dialogues
+*   *Mixed Changes*: "I noticed you modified both the API logic and some CSS styling. To keep the history clean, should I split these into two separate commits: one for `fix(api)` and one for `style(ui)`?"
+*   *Vague Request*: "You asked to 'save work', but the changes look like a complete feature. Shall I commit this as `feat(user): add profile page`?"
 
 ---
 
@@ -55,6 +66,12 @@ Strictly adhere to the **Conventional Commits** specification.
 | **ci** | CI configuration / scripts | `PATCH` |
 | **chore** | Maintainance (no src/test change) | `PATCH` |
 | **revert** | Reverting a previous commit | `PATCH` |
+
+### Scope Inference
+*   **Rule**: Automatically infer the scope based on the file paths of staged changes.
+*   **Example**: `src/auth/login.ts` -> scope: `auth`
+*   **Example**: `components/Button.tsx` -> scope: `ui` or `components`
+*   **Example**: `README.md` -> scope: `docs`
 
 ### Writing Rules
 1.  **Subject**: Imperative, present tense ("Add" not "Added"). No trailing period. Max 72 chars.
@@ -93,6 +110,11 @@ git diff --cached       # Review staged changes (Sanity Check)
 ```bash
 git commit -m "<type>(<scope>): <subject>" -m "<body>"
 ```
+
+### Step 5: Sync & Push (Optional but Recommended)
+*   **Pre-Push Sync**: Always advise `git pull --rebase` before pushing to keep history linear.
+*   **Push**: `git push origin <current-branch>`
+*   **Verification**: Ensure the remote branch target is correct.
 
 ### Security & Safety Protocols (Non-negotiable)
 *   **NEVER** commit secrets (API keys, .env, credentials).
