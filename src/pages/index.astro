@@ -11,9 +11,11 @@ const personalSkills = skills.filter(s => s.data.type === 'personal');
 const referenceSkills = skills.filter(s => s.data.type === 'reference');
 
 const totalCount = skills.length;
+const pageTitle = "Agent Skills | curated knowledge for AI agents";
+const pageDescription = "Explore a collection of high-quality, practical skills designed for advanced AI agents, covering automation, coding, and design.";
 ---
 
-<Layout title="Agent Skills | My Library">
+<Layout title={pageTitle} description={pageDescription}>
   <main class="min-h-dvh relative">
     <!-- VIEW: LIST -->
     <div id="list-view" class="transition-all duration-500 ease-in-out pb-32 will-change-transform">
@@ -125,6 +127,7 @@ const totalCount = skills.length;
   const emptyState = document.getElementById('empty-state');
   const clearBtn = document.getElementById('clear-search');
   
+  const ORIGIN_TITLE = document.title;
   let currentScrollPos = 0;
   let lastFocusedElement: HTMLElement | null = null;
 
@@ -168,6 +171,10 @@ const totalCount = skills.length;
         currentScrollPos = window.scrollY;
         detail.classList.remove('hidden');
         
+        // Update document title for SEO/UX
+        const skillDisplayName = detail.querySelector('h2')?.textContent || skillName;
+        document.title = `${skillDisplayName} | Agent Skills`;
+        
         // Use smoother transiton class
         listView?.classList.add('opacity-0', '-translate-y-4');
         setTimeout(() => {
@@ -192,6 +199,10 @@ const totalCount = skills.length;
 
   function hideDetail() {
     detailsContainer?.classList.add('opacity-0', 'translate-y-4');
+    
+    // Restore original title
+    document.title = ORIGIN_TITLE;
+
     setTimeout(() => {
         detailsContainer?.classList.add('hidden');
         listView?.classList.remove('hidden');
