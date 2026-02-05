@@ -11,8 +11,8 @@ const isPersonal = skill.data.type === 'personal';
 
 <button 
     class:list={[
-        "skill-card group bg-white border border-notebook-decor rounded-xl shadow-sm text-left w-full block",
-        "hover:shadow-md hover:border-notebook-ink transition-all duration-300",
+        "skill-card group bg-white border border-notebook-decor rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-left w-full block",
+        "hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:border-notebook-ink transition-all duration-500 ease-out",
         "overflow-hidden cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-notebook-interactive focus-visible:outline-none",
         isPersonal ? 'skill-trigger' : 'external-trigger'
     ]}

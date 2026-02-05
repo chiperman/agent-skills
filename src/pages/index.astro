@@ -40,7 +40,7 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
             type="text" 
             id="skill-search"
             placeholder="Search skills..." 
-            class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-xl shadow-sm text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none transition-all font-body text-base"
+            class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none focus:ring-2 focus:ring-notebook-interactive/20 transition-all font-body text-base"
             autocomplete="off"
             />
             <div class="absolute inset-y-0 right-4 flex items-center">
@@ -84,7 +84,9 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
         <!-- Empty State -->
         <div id="empty-state" class="hidden text-center py-20">
             <p class="text-notebook-secondary font-medium text-lg">No matches found.</p>
-            <button id="clear-search" class="mt-2 text-notebook-ink underline hover:no-underline text-sm font-bold">Clear filters</button>
+            <button id="clear-search" class="mt-4 px-6 py-2 bg-notebook-ink text-notebook-base rounded-lg hover:bg-notebook-interactive transition-colors text-sm font-bold shadow-sm">
+              Clear all filters
+            </button>
         </div>
     </div>
 
