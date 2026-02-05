@@ -9,7 +9,7 @@ const { skill } = Astro.props;
 const { Content } = await render(skill);
 ---
 
-<div id={`detail-${skill.data.name}`} class="skill-detail hidden bg-notebook-base">
+<div id={`detail-${skill.data.name}`} class="skill-detail hidden bg-notebook-base pb-32">
   <!-- Detail Header/Breadcrumb -->
   <div class="mb-8 flex items-center gap-3">
     <button class="back-to-list flex items-center gap-2 text-notebook-secondary hover:text-notebook-ink transition-colors font-bold text-xs uppercase tracking-widest">
@@ -24,24 +24,23 @@ const { Content } = await render(skill);
         <h2 class="text-4xl font-bold text-notebook-ink font-heading leading-tight">
           {skill.data.name}
         </h2>
-        <div class="flex gap-3">
+        <div class="flex gap-4">
+            <button 
+               class="copy-raw-btn flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
+               data-skill={skill.data.name}
+               title="Copy Raw Markdown"
+           >
+               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+               COPY
+           </button>
            <a 
-              href={`/agent-skills/raw/${skill.data.name}.md`}
-              class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-md bg-white"
-              title="View Raw Markdown"
-              download
-          >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-              RAW
-          </a>
-          <a 
-              href={`/agent-skills/downloads/${skill.data.name}.zip`}
-              class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-md bg-white"
-              title="Download Assets (.zip)"
-          >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-              ZIP
-          </a>
+               href={`/agent-skills/downloads/${skill.data.name}.zip`}
+               class="flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
+               title="Download Assets (.zip)"
+           >
+               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+               DOWNLOAD
+           </a>
         </div>
       </div>
       <p class="text-xl text-notebook-secondary font-medium leading-relaxed max-w-2xl">
@@ -51,24 +50,26 @@ const { Content } = await render(skill);
 
     <!-- Installation -->
     {skill.data.install_command && (
-      <div class="mb-12 p-6 bg-notebook-grid rounded-2xl border border-notebook-decor">
-        <h4 class="text-xs font-bold text-notebook-secondary uppercase tracking-widest mb-4">CLI Installation</h4>
-        <div class="flex flex-col gap-3">
-          <div class="relative group/install">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+      <div class="mb-12 p-px bg-notebook-decor/30 rounded-xl border border-notebook-decor/50">
+        <div class="bg-gray-50/30 p-6 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-[10px] font-black text-notebook-secondary uppercase tracking-[0.25em] opacity-70">CLI Installation</h4>
+                <button 
+                    class="copy-install-btn group/btn flex items-center gap-2 px-4 py-2 text-notebook-base bg-notebook-ink hover:bg-notebook-secondary transition-all rounded-xl shadow-sm active:scale-95 font-bold text-[11px] tracking-widest"
+                    data-command={skill.data.install_command}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:rotate-12 transition-transform"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    COPY COMMAND
+                </button>
             </div>
-            <code class="block w-full pl-10 pr-4 py-3 bg-white border border-notebook-decor rounded-lg text-sm font-mono text-notebook-ink overflow-x-auto whitespace-nowrap">
-              {skill.data.install_command}
-            </code>
-          </div>
-          <button 
-              class="copy-install-btn flex items-center justify-center gap-2 px-6 py-3 bg-notebook-ink text-notebook-base rounded-lg font-bold hover:bg-notebook-interactive transition-all text-sm w-full sm:w-auto self-end"
-              data-command={skill.data.install_command}
-          >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              <span>COPY COMMAND</span>
-          </button>
+            <div class="relative group/install">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-ink/40"><polyline points="4 17 10 11 4 5"/></svg>
+                </div>
+                <code class="block w-full pl-10 pr-4 py-4 bg-white border border-notebook-decor rounded-lg text-sm font-mono text-notebook-ink overflow-x-auto whitespace-nowrap shadow-inner ring-1 ring-black/5">
+                {skill.data.install_command}
+                </code>
+            </div>
         </div>
       </div>
     )}
