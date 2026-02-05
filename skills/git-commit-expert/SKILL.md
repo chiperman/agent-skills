@@ -103,12 +103,13 @@ git diff --cached       # Review staged changes (Sanity Check)
 *   **Prefer** `git add -p` (patch mode) to interactively choose hunks. This ensures you only stage what you intended.
 *   **Avoid** `git add .` unless you have explicitly verified every file.
 
-### Step 3: Verification (QA)
-*   **Mandatory**: Run the project's build or fastest verification command before committing:
-    *   Web/Astro: `npm run build` (Ensures asset sync and CSS/syntax validity)
-    *   Backend: `pytest`, `cargo check`, or `npm test`
-    *   Linting: `npm run lint` (Catch style issues early)
-*   **Goal**: Never commit code that breaks the build or sync state.
+### Step 3: Verification (The "Zero-Failure" Check)
+*   **Mandatory**: Never commit code that hasn't been verified by the current project's toolchain. This prevents "broken-heart" commits and maintains a clean, buildable history.
+*   **Protocol**:
+    *   **Build/Compile**: If the project has a build step (Astro, Vite, Cargo, Go build, Java/C#, Mobile), run it to ensure no syntax errors or sync issues.
+    *   **Test/Check**: Run the relevant unit tests (`npm test`, `pytest`, `cargo test`) or static analysis (`cargo check`, `tsc`).
+    *   **Lint**: Run `npm run lint` or equivalent to maintain style consistency.
+*   **Agent Logic**: If you are unsure which command to run, scan `package.json`, `Makefile`, `README.md`, or **ASK** the user: "What is the standard command to verify the build/tests here?"
 
 ### Step 4: Commit
 ```bash
