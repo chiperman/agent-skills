@@ -6,7 +6,6 @@ interface Props {
 }
 
 const { skill } = Astro.props;
-const isExternal = skill.data.status === 'Curated';
 ---
 
 <div 
@@ -20,9 +19,6 @@ const isExternal = skill.data.status === 'Curated';
           <h2 class="text-xl md:text-2xl font-bold text-notebook-ink font-heading group-hover:text-notebook-interactive transition-colors">
             {skill.data.name}
           </h2>
-          {isExternal && (
-            <span class="px-2 py-0.5 text-xs font-mono bg-notebook-secondary text-notebook-base rounded-full">External</span>
-          )}
         </div>
         
         <p class="text-notebook-secondary text-sm md:text-base mb-4 font-body leading-relaxed">

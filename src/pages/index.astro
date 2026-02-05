@@ -3,14 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SkillCard from '../components/SkillCard.astro';
 import { getCollection } from 'astro:content';
 
-const skills = await getCollection('skills');
-
-const featuredSkills = skills
-  .filter(s => s.data.status === 'Featured')
-  .sort((a, b) => a.data.name.localeCompare(b.data.name));
-
-const curatedSkills = skills
-  .filter(s => s.data.status === 'Curated')
+const skills = (await getCollection('skills'))
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 
 const totalCount = skills.length;
@@ -24,7 +17,7 @@ const totalCount = skills.length;
         Agent Skills
       </h1>
       <p class="text-lg text-notebook-secondary font-medium">
-        A curated collection of expert knowledge for AI agents.
+        A collection of expert knowledge for AI agents.
       </p>
     </header>
 
@@ -49,53 +42,14 @@ const totalCount = skills.length;
       </div>
     </div>
 
-    <!-- Featured Skills Section -->
-    <section id="personal-section" class="mb-16">
-      <div class="flex items-center gap-4 mb-8">
-          <h2 class="text-xs font-bold text-notebook-secondary uppercase tracking-[0.2em]">⭐ Featured Skills</h2>
-          <div class="h-px bg-notebook-decor flex-1"></div>
-      </div>
-
+    <!-- Skills Section -->
+    <section id="skills-section" class="mb-16">
       <div id="skills-grid" class="flex flex-col gap-4">
-        {featuredSkills.map(skill => (
+        {skills.map(skill => (
           <SkillCard skill={skill} />
         ))}
       </div>
     </section>
-
-    <!-- Curated Skills Section -->
-    {curatedSkills.length > 0 && (
-      <section id="external-section" class="mb-16">
-        <div class="flex items-center gap-4 mb-6">
-            <h2 class="text-xs font-bold text-notebook-secondary uppercase tracking-[0.2em]">Curated Collection</h2>
-            <div class="h-px bg-notebook-decor flex-1"></div>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {curatedSkills.map(skill => (
-            <a 
-              href={skill.data.github_url || "#"} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="external-item flex items-center justify-between p-4 bg-white border border-notebook-decor rounded-lg hover:border-notebook-ink transition-colors group"
-              data-text={`${skill.data.name} ${skill.data.description}`.toLowerCase()}
-            >
-              <div>
-                <h3 class="font-bold text-notebook-ink group-hover:text-notebook-interactive transition-colors">
-                  {skill.data.name}
-                </h3>
-                <p class="text-xs text-notebook-secondary mt-1 opacity-70">
-                    Curated for your workflow
-                </p>
-              </div>
-              <div class="text-notebook-secondary group-hover:text-notebook-ink">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
 
     <!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-20">
@@ -122,54 +76,37 @@ const totalCount = skills.length;
 <script>
   // Search Logic
   const searchInput = document.getElementById('skill-search') as HTMLInputElement;
-  const skillsGrid = document.getElementById('skills-grid');
-  const externalSection = document.getElementById('external-section');
-  const personalSection = document.getElementById('personal-section');
+  const skillsSection = document.getElementById('skills-section');
   const emptyState = document.getElementById('empty-state');
   const countBadge = document.getElementById('count-badge');
   const clearBtn = document.getElementById('clear-search');
   
-  // Personal Cards
-  const personalCards = Array.from(document.querySelectorAll('.skill-card')).map(card => ({
+  // Skill Cards
+  const skillCards = Array.from(document.querySelectorAll('.skill-card')).map(card => ({
     element: card as HTMLElement,
     text: card.getAttribute('data-skill-name')?.toLowerCase() + ' ' + 
           (card.querySelector('h2')?.textContent?.toLowerCase() || '') + ' ' + 
           (card.querySelector('p')?.textContent?.toLowerCase() || '')
   }));
 
-  // External Items
-  const externalItems = Array.from(document.querySelectorAll('.external-item')).map(item => ({
-    element: item as HTMLElement,
-    text: item.getAttribute('data-text') || ''
-  }));
-
   function filterSkills(query: string) {
     const q = query.toLowerCase().trim();
-    let personalVisible = 0;
-    let externalVisible = 0;
+    let visibleCount = 0;
 
-    personalCards.forEach(item => {
+    skillCards.forEach(item => {
         const match = item.text.includes(q);
         item.element.classList.toggle('hidden', !match);
-        if (match) personalVisible++;
-    });
-
-    externalItems.forEach(item => {
-        const match = item.text.includes(q);
-        item.element.classList.toggle('hidden', !match);
-        if (match) externalVisible++;
+        if (match) visibleCount++;
     });
 
     // Toggle sections
-    personalSection?.classList.toggle('hidden', personalVisible === 0);
-    externalSection?.classList.toggle('hidden', externalVisible === 0);
+    skillsSection?.classList.toggle('hidden', visibleCount === 0);
 
     // Toggle empty state
-    const totalVisible = personalVisible + externalVisible;
-    emptyState?.classList.toggle('hidden', totalVisible > 0);
+    emptyState?.classList.toggle('hidden', visibleCount > 0);
     
     // Update counter
-    if (countBadge) countBadge.textContent = `${totalVisible} TOTAL`;
+    if (countBadge) countBadge.textContent = `${visibleCount} TOTAL`;
   }
 
   searchInput?.addEventListener('input', (e) => {

@@ -6,7 +6,6 @@ const skillsCollection = defineCollection({
         name: z.string(),
         description: z.string(),
         github_url: z.string().url().optional(),
-        status: z.enum(['Featured', 'Curated']).optional().default('Curated'),
         install_command: z.string().optional(),
     }),
 });

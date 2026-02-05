@@ -29,26 +29,7 @@ function parseReadmeMetadata() {
     const readme = fs.readFileSync(README_PATH, 'utf8');
     const metadataMap = {};
 
-    // 1. Parse Table for Status
-    // Match lines like: | **[git-commit-expert](./...)** | ⭐ **Featured** | ... |
-    const tableRows = readme.match(/\| \*\*\[([^\]]+)\].*? \| (.*?) \|/g);
-    if (tableRows) {
-        tableRows.forEach(row => {
-            const parts = row.split('|').map(p => p.trim());
-            if (parts.length >= 3) {
-                const nameMatch = parts[1].match(/\[([^\]]+)\]/);
-                if (nameMatch) {
-                    const name = nameMatch[1];
-                    const statusRaw = parts[2];
-                    metadataMap[name] = {
-                        status: statusRaw.includes('Featured') ? 'Featured' : 'Curated'
-                    };
-                }
-            }
-        });
-    }
-
-    // 2. Parse Installation Section for GitHub URLs and Commands
+    // 1. Parse Installation Section for GitHub URLs and Commands
     // Match lines like: npx skills add https://github.com/org/repo --skill name
     const installLinks = readme.match(/npx skills add (https:\/\/github\.com\/[^\s]+) --skill ([^\s\n]+)/g);
     if (installLinks) {
@@ -61,6 +42,11 @@ function parseReadmeMetadata() {
                 if (metadataMap[name]) {
                     metadataMap[name].github_url = url;
                     metadataMap[name].install_command = fullCommand;
+                } else {
+                    metadataMap[name] = {
+                        github_url: url,
+                        install_command: fullCommand
+                    };
                 }
             }
         });
@@ -121,19 +107,18 @@ async function main() {
 
                 // 3. Copy SKILL.md to src/content/skills with injected metadata
                 const { data: parsedData, content } = matter(fileContent);
-                const meta = readmeMetadata[skillName] || { status: 'Curated' };
+                const meta = readmeMetadata[skillName] || {};
 
                 const newFrontmatter = {
                     ...parsedData,
                     name: skillName, // ensure consistency
-                    status: meta.status,
                     github_url: meta.github_url,
                     install_command: meta.install_command || `npx skills add https://github.com/chiperman/agent-skills --skill ${skillName}`
                 };
 
                 const destPath = path.join(CONTENT_SKILLS_DIR, `${skillName}.md`);
                 fs.writeFileSync(destPath, matter.stringify(content, newFrontmatter));
-                console.log(`   ✅ Content synced to: src/content/skills/${skillName}.md (Status: ${meta.status})`);
+                console.log(`   ✅ Content synced to: src/content/skills/${skillName}.md`);
 
                 // 4. Copy SKILL.md to public/raw for client-side fetching
                 const rawDestPath = path.join(PUBLIC_RAW_DIR, `${skillName}.md`);
