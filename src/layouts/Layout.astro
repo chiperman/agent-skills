@@ -1,3 +1,17 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+	title = "Agent Skills | My Library",
+	description = "A collection of expert knowledge and automation skills for AI agents."
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://chiperman.github.io/agent-skills/");
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -5,7 +19,27 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/agent-skills/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Agent Skills</title>
+		
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name="title" content={title} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL("/agent-skills/og-image.png", Astro.url)} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL("/agent-skills/og-image.png", Astro.url)} />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -37,6 +71,18 @@
 		}
 		p {
 			@apply text-pretty;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*, ::before, ::after {
+			animation-delay: -1ms !important;
+			animation-duration: 1ms !important;
+			animation-iteration-count: 1 !important;
+			background-attachment: initial !important;
+			scroll-behavior: auto !important;
+			transition-duration: 0s !important;
+			transition-delay: 0s !important;
 		}
 	}
 
