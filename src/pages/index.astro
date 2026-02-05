@@ -14,9 +14,9 @@ const totalCount = skills.length;
 ---
 
 <Layout title="Agent Skills | My Library">
-  <main class="min-h-screen relative overflow-x-hidden">
+  <main class="min-h-screen relative">
     <!-- VIEW: LIST -->
-    <div id="list-view" class="transition-all duration-500 ease-in-out">
+    <div id="list-view" class="transition-all duration-500 ease-in-out pb-20">
         <!-- Header -->
         <header class="mb-12 pt-8">
         <h1 class="text-4xl font-bold mb-3 text-notebook-ink tracking-tight">
@@ -85,12 +85,20 @@ const totalCount = skills.length;
         </div>
     </div>
 
-    <!-- VIEW: DETAILS -->
-    <div id="details-container" class="hidden absolute top-0 left-0 w-full pt-8 min-h-screen z-30 transition-all duration-500 ease-in-out opacity-0 translate-y-4">
+    <div id="details-container" class="hidden absolute top-0 left-0 w-full pt-8 z-30 transition-all duration-500 ease-in-out opacity-0 translate-y-4">
         {personalSkills.map(skill => (
             <SkillDetail skill={skill} />
         ))}
     </div>
+
+    <!-- Floating Back to Top -->
+    <button 
+        id="back-to-top" 
+        class="fixed bottom-8 right-8 p-4 bg-notebook-ink text-notebook-base rounded-full shadow-xl hover:bg-notebook-interactive transition-all duration-300 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center justify-center"
+        title="Back to Top"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
   </main>
 
   <footer id="main-footer" class="mt-20 py-12 text-center text-notebook-secondary border-t border-notebook-decor">
@@ -109,6 +117,7 @@ const totalCount = skills.length;
   const listView = document.getElementById('list-view');
   const detailsContainer = document.getElementById('details-container');
   const footer = document.getElementById('main-footer');
+  const backToTopBtn = document.getElementById('back-to-top');
   const searchInput = document.getElementById('skill-search') as HTMLInputElement;
   const countBadge = document.getElementById('count-badge');
   const emptyState = document.getElementById('empty-state');
@@ -184,6 +193,19 @@ const totalCount = skills.length;
     // Update URL
     history.pushState({}, '', window.location.pathname);
   }
+
+  // Back to Top Logic
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 400) {
+        backToTopBtn?.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+    } else {
+        backToTopBtn?.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+    }
+  });
+
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // Event Listeners
   document.addEventListener('click', (e) => {
