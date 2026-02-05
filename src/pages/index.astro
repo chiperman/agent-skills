@@ -16,7 +16,7 @@ const totalCount = skills.length;
 <Layout title="Agent Skills | My Library">
   <main class="min-h-screen relative">
     <!-- VIEW: LIST -->
-    <div id="list-view" class="transition-all duration-500 ease-in-out pb-20">
+    <div id="list-view" class="transition-all duration-500 ease-in-out pb-32">
         <!-- Header -->
         <header class="mb-12 pt-8">
         <h1 class="text-4xl font-bold mb-3 text-notebook-ink tracking-tight">
@@ -37,11 +37,11 @@ const totalCount = skills.length;
             type="text" 
             id="skill-search"
             placeholder="Search skills..." 
-            class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-lg shadow-sm text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none transition-all font-body text-base"
+            class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-xl shadow-sm text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none transition-all font-body text-base"
             autocomplete="off"
             />
             <div class="absolute inset-y-0 right-4 flex items-center">
-                <span class="text-[10px] font-bold text-notebook-secondary bg-notebook-base px-2 py-1 rounded border border-notebook-decor" id="count-badge">
+                <span class="text-[10px] font-bold text-notebook-secondary bg-notebook-base px-2 py-1 rounded-xl border border-notebook-decor" id="count-badge">
                     {totalCount} TOTAL
                 </span>
             </div>
@@ -70,7 +70,7 @@ const totalCount = skills.length;
                     <h2 class="text-xs font-bold text-notebook-secondary uppercase tracking-[0.2em]">External Reference</h2>
                     <div class="h-px bg-notebook-decor flex-1"></div>
                 </div>
-                <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {referenceSkills.map(skill => (
                     <SkillCard skill={skill} />
                     ))}
@@ -94,7 +94,7 @@ const totalCount = skills.length;
     <!-- Floating Back to Top -->
     <button 
         id="back-to-top" 
-        class="fixed bottom-8 right-8 p-4 bg-notebook-ink text-notebook-base rounded-full shadow-xl hover:bg-notebook-interactive transition-all duration-300 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center justify-center"
+        class="fixed bottom-8 right-8 p-4 bg-notebook-ink text-notebook-base rounded-xl shadow-xl hover:bg-notebook-interactive transition-all duration-300 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center justify-center"
         title="Back to Top"
     >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
@@ -208,7 +208,7 @@ const totalCount = skills.length;
   });
 
   // Event Listeners
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', async (e) => {
     const target = e.target as HTMLElement;
     
     // Card Click
@@ -231,17 +231,39 @@ const totalCount = skills.length;
         return;
     }
 
+    // Copy Raw Markdown
+    const copyRawBtn = target.closest('.copy-raw-btn') as HTMLButtonElement;
+    if (copyRawBtn) {
+        const skillName = copyRawBtn.dataset.skill || '';
+        const originalContent = copyRawBtn.innerHTML;
+        
+        try {
+            const response = await fetch(`/agent-skills/raw/${skillName}.md`);
+            const text = await response.text();
+            await navigator.clipboard.writeText(text);
+            
+            copyRawBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                COPIED!
+            `;
+            setTimeout(() => copyRawBtn.innerHTML = originalContent, 2000);
+        } catch (err) {
+            console.error('Failed to copy raw content:', err);
+        }
+        return;
+    }
+
     // Copy Command
     const copyBtn = target.closest('.copy-install-btn') as HTMLButtonElement;
     if (copyBtn) {
         const command = copyBtn.dataset.command || '';
         navigator.clipboard.writeText(command);
-        const span = copyBtn.querySelector('span');
-        if (span) {
-            const original = span.textContent;
-            span.textContent = 'COPIED!';
-            setTimeout(() => span.textContent = original, 2000);
-        }
+        const original = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            COPIED!
+        `;
+        setTimeout(() => copyBtn.innerHTML = original, 2000);
     }
   });
 
