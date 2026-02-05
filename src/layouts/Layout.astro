@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/agent-skills/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Agent Skills</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-notebook-base bg-page-texture min-h-screen font-body text-notebook-ink p-4 md:p-8 selection:bg-notebook-interactive/20">
+		<div class="max-w-5xl mx-auto">
+			<slot />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--notebook-base: #fdfcfb;
+		--notebook-grid: #f7f3f0;
+		--notebook-decor: #e8e2dd;
+		--notebook-ink: #3a3430;
+		--notebook-secondary: #736b63;
+		--notebook-interactive: #b56d4d;
+	}
+	
+	@layer base {
+		h1, h2, h3, h4 {
+			@apply font-heading;
+		}
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	/* Custom Scrollbar */
+	::-webkit-scrollbar {
+		width: 8px;
+	}
+	::-webkit-scrollbar-track {
+		background: var(--notebook-base);
+	}
+	::-webkit-scrollbar-thumb {
+		background: var(--notebook-decor);
+		border-radius: 4px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: var(--notebook-secondary);
+	}
+</style>
