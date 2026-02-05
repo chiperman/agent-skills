@@ -16,7 +16,7 @@ const totalCount = skills.length;
 <Layout title="Agent Skills | My Library">
   <main class="min-h-dvh relative">
     <!-- VIEW: LIST -->
-    <div id="list-view" class="transition-all duration-500 ease-in-out pb-32">
+    <div id="list-view" class="transition-all duration-500 ease-in-out pb-32 will-change-transform">
         <!-- Header -->
         <header class="mb-12 pt-8">
         <h1 class="text-4xl font-bold mb-3 text-notebook-ink tracking-tight">
@@ -86,7 +86,7 @@ const totalCount = skills.length;
         </div>
     </div>
 
-    <div id="details-container" class="hidden absolute top-0 left-0 w-full pt-8 z-30 transition-all duration-500 ease-in-out opacity-0 translate-y-4">
+    <div id="details-container" class="hidden absolute top-0 left-0 w-full pt-8 z-30 transition-all duration-500 ease-in-out opacity-0 translate-y-4 will-change-transform">
         {personalSkills.map(skill => (
             <SkillDetail skill={skill} />
         ))}
@@ -95,7 +95,7 @@ const totalCount = skills.length;
     <!-- Floating Back to Top -->
     <button 
         id="back-to-top" 
-        class="fixed bottom-8 right-8 p-4 bg-notebook-ink text-notebook-base rounded-xl shadow-xl hover:bg-notebook-interactive transition-all duration-300 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center justify-center"
+        class="fixed bottom-8 right-8 p-4 bg-notebook-ink text-notebook-base rounded-xl shadow-xl hover:bg-notebook-interactive transition-all duration-500 opacity-0 translate-y-10 pointer-events-none z-50 flex items-center justify-center transform-gpu"
         title="Back to Top"
         aria-label="Back to top"
     >
@@ -128,60 +128,64 @@ const totalCount = skills.length;
   let currentScrollPos = 0;
   let lastFocusedElement: HTMLElement | null = null;
 
-  // Search Logic
+  // Optimized Search Logic with RequestAnimationFrame
   const allCards = Array.from(document.querySelectorAll('.skill-card')).map(card => ({
     element: card as HTMLElement,
     text: (card.querySelector('h2')?.textContent?.toLowerCase() || '') + ' ' + 
           (card.querySelector('p')?.textContent?.toLowerCase() || '')
   }));
 
+  let searchTimeout: number | null = null;
   function filterSkills(query: string) {
-    const q = query.toLowerCase().trim();
-    let visibleCount = 0;
+    if (searchTimeout) cancelAnimationFrame(searchTimeout);
+    
+    searchTimeout = requestAnimationFrame(() => {
+        const q = query.toLowerCase().trim();
+        let visibleCount = 0;
 
-    allCards.forEach(item => {
-        const match = item.text.includes(q);
-        item.element.classList.toggle('hidden', !match);
-        if (match) visibleCount++;
+        allCards.forEach(item => {
+            const match = item.text.includes(q);
+            item.element.classList.toggle('hidden', !match);
+            if (match) visibleCount++;
+        });
+
+        // Update section visibility
+        document.getElementById('personal-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'personal' && !c.element.classList.contains('hidden')).length);
+        document.getElementById('reference-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'reference' && !c.element.classList.contains('hidden')).length);
+
+        emptyState?.classList.toggle('hidden', visibleCount > 0);
+        if (countBadge) countBadge.textContent = `${visibleCount} TOTAL`;
     });
-
-    // Update section visibility
-    document.getElementById('personal-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'personal' && !c.element.classList.contains('hidden')).length);
-    document.getElementById('reference-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'reference' && !c.element.classList.contains('hidden')).length);
-
-    emptyState?.classList.toggle('hidden', visibleCount > 0);
-    if (countBadge) countBadge.textContent = `${visibleCount} TOTAL`;
   }
 
-  // View Switching Logic
+  // View Switching Logic with optimized transition curves
   function showDetail(skillName: string, triggerElement: HTMLElement) {
-    // Hide all details first
     document.querySelectorAll('.skill-detail').forEach(el => el.classList.add('hidden'));
     
-    // Show target detail
     const detail = document.getElementById(`detail-${skillName}`);
     if (detail) {
         lastFocusedElement = triggerElement;
         currentScrollPos = window.scrollY;
         detail.classList.remove('hidden');
         
-        // Annimate transition
+        // Use smoother transiton class
         listView?.classList.add('opacity-0', '-translate-y-4');
         setTimeout(() => {
             listView?.classList.add('hidden');
             footer?.classList.add('hidden');
             detailsContainer?.classList.remove('hidden');
+            
+            // Force reflow for clean animation
+            detailsContainer?.offsetHeight; 
+            
             requestAnimationFrame(() => {
                 detailsContainer?.classList.remove('opacity-0', 'translate-y-4');
                 window.scrollTo(0, 0);
-                
-                // Set initial focus in detail view for A11y
                 const backBtn = detail.querySelector('.back-to-list') as HTMLElement;
                 backBtn?.focus();
             });
         }, 300);
         
-        // Update URL
         history.pushState({ skill: skillName }, '', `#${skillName}`);
     }
   }
@@ -192,27 +196,35 @@ const totalCount = skills.length;
         detailsContainer?.classList.add('hidden');
         listView?.classList.remove('hidden');
         footer?.classList.remove('hidden');
+        
+        // Force reflow
+        listView?.offsetHeight;
+
         requestAnimationFrame(() => {
             listView?.classList.remove('opacity-0', '-translate-y-4');
             window.scrollTo(0, currentScrollPos);
-            
-            // Restore focus for A11y
             if (lastFocusedElement) {
                 lastFocusedElement.focus();
             }
         });
     }, 300);
     
-    // Update URL
     history.pushState({}, '', window.location.pathname);
   }
 
-  // Back to Top Logic
+  // Optimized Scroll Listener
+  let scrollTicking = false;
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) {
-        backToTopBtn?.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
-    } else {
-        backToTopBtn?.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+    if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+            if (window.scrollY > 400) {
+                backToTopBtn?.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            } else {
+                backToTopBtn?.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }
+            scrollTicking = false;
+        });
+        scrollTicking = true;
     }
   });
 
@@ -220,11 +232,8 @@ const totalCount = skills.length;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Event Listeners
   document.addEventListener('click', async (e) => {
     const target = e.target as HTMLElement;
-    
-    // Card Click
     const card = target.closest('.skill-card') as HTMLElement;
     if (card) {
         const type = card.dataset.type;
@@ -238,23 +247,19 @@ const totalCount = skills.length;
         return;
     }
 
-    // Back Button Click
     if (target.closest('.back-to-list')) {
         hideDetail();
         return;
     }
 
-    // Copy Raw Markdown
     const copyRawBtn = target.closest('.copy-raw-btn') as HTMLButtonElement;
     if (copyRawBtn) {
         const skillName = copyRawBtn.dataset.skill || '';
         const originalContent = copyRawBtn.innerHTML;
-        
         try {
             const response = await fetch(`/agent-skills/raw/${skillName}.md`);
             const text = await response.text();
             await navigator.clipboard.writeText(text);
-            
             copyRawBtn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                 COPIED!
@@ -266,7 +271,6 @@ const totalCount = skills.length;
         return;
     }
 
-    // Copy Command
     const copyBtn = target.closest('.copy-install-btn') as HTMLButtonElement;
     if (copyBtn) {
         const command = copyBtn.dataset.command || '';
@@ -280,13 +284,10 @@ const totalCount = skills.length;
     }
   });
 
-  // Handle Keyboard Navigation for Cards (already handled by native button usually, but keeping logic consistent)
   document.addEventListener('keydown', (e) => {
     const target = e.target as HTMLElement;
     const card = target.closest('.skill-card') as HTMLElement;
-    
     if (card && (e.key === 'Enter' || e.key === ' ')) {
-        // Only if it's the personal skill card, we handle internal routing
         const type = card.dataset.type;
         if (type === 'personal') {
             e.preventDefault();
@@ -294,8 +295,6 @@ const totalCount = skills.length;
             showDetail(name, card);
         }
     }
-    
-    // Escape to go back
     if (e.key === 'Escape' && !detailsContainer?.classList.contains('hidden')) {
         hideDetail();
     }
@@ -313,10 +312,8 @@ const totalCount = skills.length;
     }
   });
 
-  // Handle Browser Back Button
   window.addEventListener('popstate', (e) => {
     if (e.state?.skill) {
-        // When popping state, we need to find the trigger element if possible, or fallback to body
         const trigger = document.querySelector(`[data-skill-name="${e.state.skill}"]`) as HTMLElement || document.body;
         showDetail(e.state.skill, trigger);
     } else {
@@ -324,7 +321,6 @@ const totalCount = skills.length;
     }
   });
 
-  // Initial Load with Hash
   window.addEventListener('load', () => {
     const hash = window.location.hash.slice(1);
     if (hash) {
