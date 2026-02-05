@@ -5,6 +5,7 @@ const skillsCollection = defineCollection({
     schema: z.object({
         name: z.string(),
         description: z.string(),
+        type: z.enum(['personal', 'reference']).default('reference'),
         github_url: z.string().url().optional(),
         install_command: z.string().optional(),
     }),

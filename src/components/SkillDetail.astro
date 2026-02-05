@@ -1,0 +1,87 @@
+---
+import { type CollectionEntry, render } from 'astro:content';
+
+interface Props {
+  skill: CollectionEntry<'skills'>;
+}
+
+const { skill } = Astro.props;
+const { Content } = await render(skill);
+---
+
+<div id={`detail-${skill.data.name}`} class="skill-detail hidden bg-notebook-base min-h-screen">
+  <!-- Detail Header/Breadcrumb -->
+  <div class="mb-8 flex items-center gap-3">
+    <button class="back-to-list flex items-center gap-2 text-notebook-secondary hover:text-notebook-ink transition-colors font-bold text-xs uppercase tracking-widest">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back to Library
+    </button>
+  </div>
+
+  <div class="max-w-4xl">
+    <header class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-4xl font-bold text-notebook-ink font-heading leading-tight">
+          {skill.data.name}
+        </h2>
+        <div class="flex gap-2">
+           <a 
+              href={`/agent-skills/raw/${skill.data.name}.md`}
+              class="p-2 text-notebook-secondary hover:text-notebook-ink transition-colors tooltip"
+              title="View Raw Markdown"
+              download
+          >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </a>
+          <a 
+              href={`/agent-skills/downloads/${skill.data.name}.zip`}
+              class="p-2 text-notebook-secondary hover:text-notebook-ink transition-colors"
+              title="Download Assets (.zip)"
+          >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+      <p class="text-xl text-notebook-secondary font-medium leading-relaxed max-w-2xl">
+        {skill.data.description}
+      </p>
+    </header>
+
+    <!-- Installation -->
+    {skill.data.install_command && (
+      <div class="mb-12 p-6 bg-notebook-grid rounded-2xl border border-notebook-decor">
+        <h4 class="text-xs font-bold text-notebook-secondary uppercase tracking-widest mb-4">CLI Installation</h4>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="relative flex-1 group/install">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+            </div>
+            <code class="block w-full pl-10 pr-4 py-3 bg-white border border-notebook-decor rounded-lg text-sm font-mono text-notebook-ink overflow-x-auto whitespace-nowrap">
+              {skill.data.install_command}
+            </code>
+          </div>
+          <button 
+              class="copy-install-btn shrink-0 flex items-center justify-center gap-2 px-6 py-3 bg-notebook-ink text-notebook-base rounded-lg font-bold hover:bg-notebook-interactive transition-all text-sm"
+              data-command={skill.data.install_command}
+          >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>COPY COMMAND</span>
+          </button>
+        </div>
+      </div>
+    )}
+
+    <!-- Content -->
+    <article class="prose prose-notebook max-w-none">
+      <Content />
+    </article>
+
+    <!-- Bottom Action -->
+    <div class="mt-16 pt-8 border-t border-notebook-decor flex justify-center">
+       <button class="back-to-list flex items-center gap-2 px-8 py-3 bg-notebook-grid border border-notebook-decor text-notebook-ink rounded-xl font-bold hover:border-notebook-ink transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Back to List
+        </button>
+    </div>
+  </div>
+</div>

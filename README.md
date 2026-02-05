@@ -7,14 +7,14 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 > [!TIP]
 > This repository is a **curated collection** of high-quality skills. Except for `git-commit-expert`, most skills are sourced from the community and might not always be the latest version. For the absolute latest updates, we recommend installing them directly from the [Official Skills Registry](https://skills.sh).
 
-| Skill                                                                 | Description                                                                                                                        |
-| :-------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-| **[git-commit-expert](./skills/git-commit-expert/SKILL.md)**          | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. |
-| **[baseline-ui](./skills/baseline-ui/SKILL.md)**                      | Enforces an opinionated UI baseline to prevent AI-generated interface slop.                                                        |
-| **[fixing-accessibility](./skills/fixing-accessibility/SKILL.md)**    | Fix accessibility issues. Ensure the component is accessible to all users.                                                         |
-| **[fixing-motion-performance](./skills/fixing-motion-performance/SKILL.md)** | Fix animation performance issues. Optimize animations and interactions.                                                     |
-| **[web-design-guidelines](./skills/web-design-guidelines/SKILL.md)**  | Review UI code for Web Interface Guidelines compliance.                                                                            |
-| **[fixing-metadata](./skills/fixing-metadata/SKILL.md)**              | Ship correct, complete metadata for SEO and performance optimization.                                                              |
+| Skill                                                                 | Category        | Description                                                                                                                        |
+| :-------------------------------------------------------------------- | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
+| **[git-commit-expert](./skills/git-commit-expert/SKILL.md)**          | Personal        | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. |
+| **[baseline-ui](./skills/baseline-ui/SKILL.md)**                      | Reference       | Enforces an opinionated UI baseline to prevent AI-generated interface slop.                                                        |
+| **[fixing-accessibility](./skills/fixing-accessibility/SKILL.md)**    | Reference       | Fix accessibility issues. Ensure the component is accessible to all users.                                                         |
+| **[fixing-motion-performance](./skills/fixing-motion-performance/SKILL.md)** | Reference | Fix animation performance issues. Optimize animations and interactions.                                                     |
+| **[web-design-guidelines](./skills/web-design-guidelines/SKILL.md)**  | Reference       | Review UI code for Web Interface Guidelines compliance.                                                                            |
+| **[fixing-metadata](./skills/fixing-metadata/SKILL.md)**              | Reference       | Ship correct, complete metadata for SEO and performance optimization.                                                              |
 
 ## Installation
 

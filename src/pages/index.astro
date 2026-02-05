@@ -1,72 +1,104 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SkillCard from '../components/SkillCard.astro';
+import SkillDetail from '../components/SkillDetail.astro';
 import { getCollection } from 'astro:content';
 
 const skills = (await getCollection('skills'))
   .sort((a, b) => a.data.name.localeCompare(b.data.name));
 
+const personalSkills = skills.filter(s => s.data.type === 'personal');
+const referenceSkills = skills.filter(s => s.data.type === 'reference');
+
 const totalCount = skills.length;
 ---
 
 <Layout title="Agent Skills | My Library">
-  <main class="min-h-[80vh]">
-    <!-- Header -->
-    <header class="mb-12 pt-8">
-      <h1 class="text-4xl font-bold mb-3 text-notebook-ink tracking-tight">
-        Agent Skills
-      </h1>
-      <p class="text-lg text-notebook-secondary font-medium">
-        A collection of expert knowledge for AI agents.
-      </p>
-    </header>
+  <main class="min-h-screen relative overflow-x-hidden">
+    <!-- VIEW: LIST -->
+    <div id="list-view" class="transition-all duration-500 ease-in-out">
+        <!-- Header -->
+        <header class="mb-12 pt-8">
+        <h1 class="text-4xl font-bold mb-3 text-notebook-ink tracking-tight">
+            Agent Skills
+        </h1>
+        <p class="text-lg text-notebook-secondary font-medium">
+            A collection of expert knowledge for AI agents.
+        </p>
+        </header>
 
-    <!-- Search Section -->
-    <div class="sticky top-4 z-20 mb-12">
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <!-- Search Section -->
+        <div class="sticky top-4 z-20 mb-12">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <input 
+            type="text" 
+            id="skill-search"
+            placeholder="Search skills..." 
+            class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-lg shadow-sm text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none transition-all font-body text-base"
+            autocomplete="off"
+            />
+            <div class="absolute inset-y-0 right-4 flex items-center">
+                <span class="text-[10px] font-bold text-notebook-secondary bg-notebook-base px-2 py-1 rounded border border-notebook-decor" id="count-badge">
+                    {totalCount} TOTAL
+                </span>
+            </div>
         </div>
-        <input 
-          type="text" 
-          id="skill-search"
-          placeholder="Search skills..." 
-          class="w-full pl-11 pr-4 py-3 bg-white border border-notebook-decor focus:border-notebook-ink rounded-lg shadow-sm text-notebook-ink placeholder-notebook-secondary/60 focus:outline-none transition-all font-body text-base"
-          autocomplete="off"
-        />
-        <div class="absolute inset-y-0 right-4 flex items-center">
-            <span class="text-[10px] font-bold text-notebook-secondary bg-notebook-base px-2 py-1 rounded border border-notebook-decor" id="count-badge">
-                {totalCount} TOTAL
-            </span>
         </div>
-      </div>
+
+        <!-- Personal Skills Section -->
+        {personalSkills.length > 0 && (
+            <section id="personal-section" class="mb-16">
+                <div class="flex items-center gap-4 mb-8">
+                    <h2 class="text-xs font-bold text-notebook-secondary uppercase tracking-[0.2em]">Crafted by Me</h2>
+                    <div class="h-px bg-notebook-decor flex-1"></div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    {personalSkills.map(skill => (
+                    <SkillCard skill={skill} />
+                    ))}
+                </div>
+            </section>
+        )}
+
+        <!-- Reference Skills Section -->
+        {referenceSkills.length > 0 && (
+            <section id="reference-section" class="mb-16">
+                <div class="flex items-center gap-4 mb-8">
+                    <h2 class="text-xs font-bold text-notebook-secondary uppercase tracking-[0.2em]">External Reference</h2>
+                    <div class="h-px bg-notebook-decor flex-1"></div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    {referenceSkills.map(skill => (
+                    <SkillCard skill={skill} />
+                    ))}
+                </div>
+            </section>
+        )}
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <p class="text-notebook-secondary font-medium text-lg">No matches found.</p>
+            <button id="clear-search" class="mt-2 text-notebook-ink underline hover:no-underline text-sm font-bold">Clear filters</button>
+        </div>
     </div>
 
-    <!-- Skills Section -->
-    <section id="skills-section" class="mb-16">
-      <div id="skills-grid" class="flex flex-col gap-4">
-        {skills.map(skill => (
-          <SkillCard skill={skill} />
+    <!-- VIEW: DETAILS -->
+    <div id="details-container" class="hidden absolute top-0 left-0 w-full pt-8 min-h-screen z-30 transition-all duration-500 ease-in-out opacity-0 translate-y-4">
+        {personalSkills.map(skill => (
+            <SkillDetail skill={skill} />
         ))}
-      </div>
-    </section>
-
-    <!-- Empty State -->
-    <div id="empty-state" class="hidden text-center py-20">
-        <p class="text-notebook-secondary font-medium text-lg">No matches found.</p>
-        <button id="clear-search" class="mt-2 text-notebook-ink underline hover:no-underline text-sm font-bold">Clear filters</button>
     </div>
   </main>
 
-  <footer class="mt-20 py-12 text-center text-notebook-secondary border-t border-notebook-decor">
+  <footer id="main-footer" class="mt-20 py-12 text-center text-notebook-secondary border-t border-notebook-decor">
     <div class="text-xs font-bold tracking-widest uppercase">
       <p class="mb-4">© 2026 Agent Skills Repository</p>
       <div class="flex justify-center gap-6">
         <a href="https://github.com/chiperman/agent-skills" target="_blank" rel="noopener noreferrer" class="hover:text-notebook-ink transition-colors">
           GitHub
-        </a>
-        <a href="#" class="hover:text-notebook-ink transition-colors">
-          Documentation
         </a>
       </div>
     </div>
@@ -74,18 +106,20 @@ const totalCount = skills.length;
 </Layout>
 
 <script>
-  // Search Logic
+  const listView = document.getElementById('list-view');
+  const detailsContainer = document.getElementById('details-container');
+  const footer = document.getElementById('main-footer');
   const searchInput = document.getElementById('skill-search') as HTMLInputElement;
-  const skillsSection = document.getElementById('skills-section');
-  const emptyState = document.getElementById('empty-state');
   const countBadge = document.getElementById('count-badge');
+  const emptyState = document.getElementById('empty-state');
   const clearBtn = document.getElementById('clear-search');
   
-  // Skill Cards
-  const skillCards = Array.from(document.querySelectorAll('.skill-card')).map(card => ({
+  let currentScrollPos = 0;
+
+  // Search Logic
+  const allCards = Array.from(document.querySelectorAll('.skill-card')).map(card => ({
     element: card as HTMLElement,
-    text: card.getAttribute('data-skill-name')?.toLowerCase() + ' ' + 
-          (card.querySelector('h2')?.textContent?.toLowerCase() || '') + ' ' + 
+    text: (card.querySelector('h2')?.textContent?.toLowerCase() || '') + ' ' + 
           (card.querySelector('p')?.textContent?.toLowerCase() || '')
   }));
 
@@ -93,21 +127,101 @@ const totalCount = skills.length;
     const q = query.toLowerCase().trim();
     let visibleCount = 0;
 
-    skillCards.forEach(item => {
+    allCards.forEach(item => {
         const match = item.text.includes(q);
         item.element.classList.toggle('hidden', !match);
         if (match) visibleCount++;
     });
 
-    // Toggle sections
-    skillsSection?.classList.toggle('hidden', visibleCount === 0);
+    // Update section visibility
+    document.getElementById('personal-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'personal' && !c.element.classList.contains('hidden')).length);
+    document.getElementById('reference-section')?.classList.toggle('hidden', !allCards.filter(c => c.element.dataset.type === 'reference' && !c.element.classList.contains('hidden')).length);
 
-    // Toggle empty state
     emptyState?.classList.toggle('hidden', visibleCount > 0);
-    
-    // Update counter
     if (countBadge) countBadge.textContent = `${visibleCount} TOTAL`;
   }
+
+  // View Switching Logic
+  function showDetail(skillName: string) {
+    // Hide all details first
+    document.querySelectorAll('.skill-detail').forEach(el => el.classList.add('hidden'));
+    
+    // Show target detail
+    const detail = document.getElementById(`detail-${skillName}`);
+    if (detail) {
+        currentScrollPos = window.scrollY;
+        detail.classList.remove('hidden');
+        
+        // Annimate transition
+        listView?.classList.add('opacity-0', '-translate-y-4');
+        setTimeout(() => {
+            listView?.classList.add('hidden');
+            footer?.classList.add('hidden');
+            detailsContainer?.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                detailsContainer?.classList.remove('opacity-0', 'translate-y-4');
+                window.scrollTo(0, 0);
+            });
+        }, 300);
+        
+        // Update URL
+        history.pushState({ skill: skillName }, '', `#${skillName}`);
+    }
+  }
+
+  function hideDetail() {
+    detailsContainer?.classList.add('opacity-0', 'translate-y-4');
+    setTimeout(() => {
+        detailsContainer?.classList.add('hidden');
+        listView?.classList.remove('hidden');
+        footer?.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            listView?.classList.remove('opacity-0', '-translate-y-4');
+            window.scrollTo(0, currentScrollPos);
+        });
+    }, 300);
+    
+    // Update URL
+    history.pushState({}, '', window.location.pathname);
+  }
+
+  // Event Listeners
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    
+    // Card Click
+    const card = target.closest('.skill-card') as HTMLDivElement;
+    if (card) {
+        const type = card.dataset.type;
+        const name = card.dataset.skillName || '';
+        if (type === 'personal') {
+            showDetail(name);
+        } else {
+            const url = card.dataset.url;
+            if (url) window.open(url, '_blank');
+        }
+        return;
+    }
+
+    // Back Button Click
+    if (target.closest('.back-to-list')) {
+        hideDetail();
+        return;
+    }
+
+    // Copy Command
+    const copyBtn = target.closest('.copy-install-btn') as HTMLButtonElement;
+    if (copyBtn) {
+        const command = copyBtn.dataset.command || '';
+        navigator.clipboard.writeText(command);
+        const span = copyBtn.querySelector('span');
+        if (span) {
+            const original = span.textContent;
+            span.textContent = 'COPIED!';
+            setTimeout(() => span.textContent = original, 2000);
+        }
+    }
+  });
 
   searchInput?.addEventListener('input', (e) => {
     filterSkills((e.target as HTMLInputElement).value);
@@ -121,18 +235,20 @@ const totalCount = skills.length;
     }
   });
 
-  // Handle Hash on Load
+  // Handle Browser Back Button
+  window.addEventListener('popstate', (e) => {
+    if (e.state?.skill) {
+        showDetail(e.state.skill);
+    } else {
+        hideDetail();
+    }
+  });
+
+  // Initial Load with Hash
   window.addEventListener('load', () => {
     const hash = window.location.hash.slice(1);
     if (hash) {
-        const targetCard = document.querySelector(`.skill-card[data-skill-name="${hash}"]`);
-        if (targetCard) {
-            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            const header = targetCard.querySelector('.header-section') as HTMLElement;
-            if (header && !targetCard.classList.contains('expanded')) {
-                header.click();
-            }
-        }
+        showDetail(hash);
     }
   });
 </script>

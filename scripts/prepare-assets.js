@@ -29,7 +29,26 @@ function parseReadmeMetadata() {
     const readme = fs.readFileSync(README_PATH, 'utf8');
     const metadataMap = {};
 
-    // 1. Parse Installation Section for GitHub URLs and Commands
+    // 1. Parse Table for Category
+    // Match lines like: | **[name](./...)** | Category | ... |
+    const tableRows = readme.match(/\| \*\*\[([^\]]+)\].*? \| (.*?) \|/g);
+    if (tableRows) {
+        tableRows.forEach(row => {
+            const parts = row.split('|').map(p => p.trim());
+            if (parts.length >= 3) {
+                const nameMatch = parts[1].match(/\[([^\]]+)\]/);
+                if (nameMatch) {
+                    const name = nameMatch[1];
+                    const categoryRaw = parts[2].toLowerCase();
+                    metadataMap[name] = {
+                        type: categoryRaw.includes('personal') ? 'personal' : 'reference'
+                    };
+                }
+            }
+        });
+    }
+
+    // 2. Parse Installation Section for GitHub URLs and Commands
     // Match lines like: npx skills add https://github.com/org/repo --skill name
     const installLinks = readme.match(/npx skills add (https:\/\/github\.com\/[^\s]+) --skill ([^\s\n]+)/g);
     if (installLinks) {
@@ -112,6 +131,7 @@ async function main() {
                 const newFrontmatter = {
                     ...parsedData,
                     name: skillName, // ensure consistency
+                    type: meta.type || 'reference',
                     github_url: meta.github_url,
                     install_command: meta.install_command || `npx skills add https://github.com/chiperman/agent-skills --skill ${skillName}`
                 };
