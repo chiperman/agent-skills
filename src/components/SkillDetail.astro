@@ -9,7 +9,7 @@ const { skill } = Astro.props;
 const { Content } = await render(skill);
 ---
 
-<div id={`detail-${skill.data.name}`} class="skill-detail hidden bg-notebook-base pb-32">
+<div id={`detail-${skill.data.name}`} class="skill-detail hidden pb-32">
   <!-- Detail Header/Breadcrumb -->
   <div class="mb-8 flex items-center gap-3">
     <button class="back-to-list flex items-center gap-2 text-notebook-secondary hover:text-notebook-ink transition-colors font-bold text-xs uppercase tracking-widest">
