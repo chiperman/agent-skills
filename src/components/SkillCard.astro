@@ -9,40 +9,61 @@ const { skill } = Astro.props;
 const isPersonal = skill.data.type === 'personal';
 ---
 
-<button 
+<div 
     class:list={[
-        "skill-card group bg-white border border-notebook-decor rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-left w-full block",
-        "hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:border-notebook-ink transition-all duration-500 ease-out",
-        "overflow-hidden cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-notebook-interactive focus-visible:outline-none",
-        isPersonal ? 'skill-trigger' : 'external-trigger'
+        "skill-card group bg-white border border-notebook-decor rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-left w-full block relative transition-all duration-300 ease-out transform-gpu",
+        "hover:shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)]",
+        "active:scale-[0.97] active:shadow-inner",
+        isPersonal ? 'personal-skill cursor-pointer' : 'reference-skill'
     ]}
-    aria-label={`View ${skill.data.name} ${isPersonal ? 'details' : 'on GitHub'}`}
     data-skill-name={skill.data.name}
-    data-url={skill.data.github_url}
     data-type={skill.data.type}
 >
     <div class="p-5 md:p-6 flex items-start gap-4">
-      <div class="flex-1">
-        <div class="flex items-center gap-3 mb-2 flex-wrap">
-          <h2 class="text-xl md:text-2xl font-bold text-notebook-ink font-heading group-hover:text-notebook-interactive transition-colors">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <h2 class="text-xl md:text-2xl font-bold text-notebook-ink font-heading group-hover:text-notebook-interactive transition-colors truncate">
             {skill.data.name}
           </h2>
-          {!isPersonal && (
-             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5 text-notebook-secondary opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          {!isPersonal && skill.data.github_url && (
+            <a 
+                href={skill.data.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="p-2 text-notebook-secondary hover:text-notebook-ink hover:bg-notebook-decor/60 rounded-full transition-all block shrink-0"
+                title="View on GitHub"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7 A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
           )}
         </div>
         
-        <p class="text-notebook-secondary text-sm md:text-base font-body leading-relaxed line-clamp-2 transition-colors group-hover:text-notebook-ink">
+        <p class="text-notebook-secondary text-sm md:text-base font-body leading-relaxed line-clamp-2 transition-colors group-hover:text-notebook-ink mb-4">
           {skill.data.description}
         </p>
+
+        {!isPersonal && skill.data.install_command && (
+            <div class="flex items-center gap-2 p-1.5 bg-gray-50/50 border border-notebook-decor rounded-xl group/cmd w-full">
+                <div class="relative flex-1 min-w-0 flex items-center bg-white border border-notebook-decor rounded-lg shadow-inner px-2.5 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="size-3 text-notebook-ink/30 shrink-0 mr-2" aria-hidden="true"><polyline points="4 17 10 11 4 5"/></svg>
+                    <code class="flex-1 text-[10px] md:text-[11px] font-mono text-notebook-ink truncate tabular-nums">
+                        {skill.data.install_command}
+                    </code>
+                </div>
+                <button 
+                    class="copy-install-btn flex items-center gap-2 px-3 py-2 bg-notebook-ink text-notebook-base rounded-lg text-[10px] font-bold tracking-widest hover:bg-notebook-secondary transition-all active:scale-95 shrink-0 shadow-sm"
+                    data-command={skill.data.install_command}
+                >
+                    COPY
+                </button>
+            </div>
+        )}
       </div>
 
-      <div class="p-2 text-notebook-decor group-hover:text-notebook-ink transition-colors">
-          {isPersonal ? (
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-6" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7 A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          )}
-      </div>
+      {isPersonal && (
+        <div class="mt-1 text-notebook-decor group-hover:text-notebook-ink transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-6" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      )}
     </div>
-</button>
+</div>

@@ -248,14 +248,16 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
   document.addEventListener('click', async (e) => {
     const target = e.target as HTMLElement;
     const card = target.closest('.skill-card') as HTMLElement;
+    
     if (card) {
+        // If clicking interactive elements inside card, do nothing
+        if (target.closest('.copy-install-btn') || target.closest('a')) return;
+
         const type = card.dataset.type;
         const name = card.dataset.skillName || '';
+
         if (type === 'personal') {
             showDetail(name, card);
-        } else {
-            const url = card.dataset.url;
-            if (url) window.open(url, '_blank');
         }
         return;
     }

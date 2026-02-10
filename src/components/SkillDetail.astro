@@ -6,7 +6,8 @@ interface Props {
 }
 
 const { skill } = Astro.props;
-const { Content } = await render(skill);
+const { Content, headings } = await render(skill);
+const hasContent = headings.length > 0 || (skill.body?.trim()?.length ?? 0) > 0;
 ---
 
 <div id={`detail-${skill.data.name}`} class="skill-detail hidden pb-32">
@@ -25,24 +26,41 @@ const { Content } = await render(skill);
           {skill.data.name}
         </h2>
         <div class="flex gap-4">
-            <button 
-               class="copy-raw-btn flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
-               data-skill={skill.data.name}
-               aria-label="Copy Raw Markdown"
-               title="Copy Raw Markdown"
-           >
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-               COPY
-           </button>
-           <a 
-               href={`/agent-skills/downloads/${skill.data.name}.zip`}
-               class="flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
-               aria-label="Download Assets (.zip)"
-               title="Download Assets (.zip)"
-           >
-               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-               DOWNLOAD
-           </a>
+            {skill.data.type === 'personal' && (
+              <>
+                <button 
+                  class="copy-raw-btn flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
+                  data-skill={skill.data.name}
+                  aria-label="Copy Raw Markdown"
+                  title="Copy Raw Markdown"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  COPY
+                </button>
+                <a 
+                    href={`/agent-skills/downloads/${skill.data.name}.zip`}
+                    class="flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
+                    aria-label="Download Assets (.zip)"
+                    title="Download Assets (.zip)"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    DOWNLOAD
+                </a>
+              </>
+            )}
+            {skill.data.github_url && (
+              <a 
+                  href={skill.data.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95"
+                  aria-label="View on GitHub"
+                  title="View on GitHub"
+              >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  GITHUB
+              </a>
+            )}
         </div>
       </div>
       <p class="text-xl text-notebook-secondary font-medium leading-relaxed max-w-2xl">
@@ -78,8 +96,10 @@ const { Content } = await render(skill);
     )}
 
     <!-- Content -->
-    <article class="prose prose-notebook max-w-none">
-      <Content />
-    </article>
+    {hasContent && (
+      <article class="prose prose-notebook max-w-none">
+        <Content />
+      </article>
+    )}
   </div>
 </div>
