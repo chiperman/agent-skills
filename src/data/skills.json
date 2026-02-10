@@ -1,65 +1,96 @@
 [
   {
     "name": "git-commit-expert",
-    "type": "personal",
-    "description": "A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols.",
-    "github_url": "https://github.com/chiperman/agent-skills",
-    "install_command": "npx skills add https://github.com/chiperman/agent-skills --skill git-commit-expert"
+    "type": "personal"
   },
   {
     "name": "find-skills",
     "type": "reference",
     "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", or express interest in extending capabilities.",
-    "github_url": "https://github.com/vercel-labs/skills",
-    "install_command": "npx skills add https://github.com/vercel-labs/skills --skill find-skills"
+    "github_url": "https://github.com/vercel-labs/skills"
   },
   {
     "name": "frontend-design",
     "type": "reference",
-    "description": "Create distinctive, production-grade frontend interfaces with high design quality (websites, landing pages, dashboards, React components, etc.). Generates creative, polished code and UI design that avoids generic AI aesthetics.",
-    "github_url": "https://github.com/anthropics/skills",
-    "install_command": "npx skills add https://github.com/anthropics/skills --skill frontend-design"
+    "description": "Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics.",
+    "github_url": "https://github.com/anthropics/skills"
   },
   {
     "name": "canvas-design",
     "type": "reference",
-    "description": "Create beautiful visual art in .png and .pdf documents using design philosophy. Used for creating posters, art, or other static pieces with original visual designs.",
-    "github_url": "https://github.com/anthropics/skills",
-    "install_command": "npx skills add https://github.com/anthropics/skills --skill canvas-design"
+    "description": "Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements.",
+    "github_url": "https://github.com/anthropics/skills"
   },
   {
     "name": "baseline-ui",
     "type": "reference",
     "description": "Enforces an opinionated UI baseline to prevent AI-generated interface slop.",
-    "github_url": "https://github.com/ibelick/ui-skills",
-    "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill baseline-ui"
+    "github_url": "https://github.com/ibelick/ui-skills"
   },
   {
     "name": "fixing-accessibility",
     "type": "reference",
     "description": "Fix accessibility issues. Ensure the component is accessible to all users.",
-    "github_url": "https://github.com/ibelick/ui-skills",
-    "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-accessibility"
+    "github_url": "https://github.com/ibelick/ui-skills"
   },
   {
     "name": "fixing-motion-performance",
     "type": "reference",
     "description": "Fix animation performance issues. Optimize animations and interactions.",
-    "github_url": "https://github.com/ibelick/ui-skills",
-    "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-motion-performance"
+    "github_url": "https://github.com/ibelick/ui-skills"
   },
   {
     "name": "web-design-guidelines",
     "type": "reference",
     "description": "Review UI code for Web Interface Guidelines compliance.",
-    "github_url": "https://github.com/vercel-labs/agent-skills",
-    "install_command": "npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines"
+    "github_url": "https://github.com/vercel-labs/agent-skills"
   },
   {
     "name": "fixing-metadata",
     "type": "reference",
     "description": "Ship correct, complete metadata for SEO and performance optimization.",
-    "github_url": "https://github.com/ibelick/ui-skills",
-    "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-metadata"
+    "github_url": "https://github.com/ibelick/ui-skills"
+  },
+  {
+    "name": "12-principles-of-animation",
+    "type": "reference",
+    "description": "Apply Disney's 12 principles to web interfaces to create natural, organic, and lifelike motion that enhances user engagement.",
+    "github_url": "https://github.com/raphaelsalaja/userinterface-wiki"
+  },
+  {
+    "name": "design-lab",
+    "type": "reference",
+    "description": "Conduct interactive design exploration, interviews, and variant generation to refine UI designs through iterative feedback.",
+    "github_url": "https://github.com/0xdesign/design-plugin"
+  },
+  {
+    "name": "interaction-design",
+    "type": "reference",
+    "description": "Design and implement delightful microinteractions, motion transitions, and user feedback patterns for seamless user experiences.",
+    "github_url": "https://github.com/wshobson/agents"
+  },
+  {
+    "name": "interface-design",
+    "type": "reference",
+    "description": "Build high-quality dashboards, admin panels, and SaaS interfaces with a focus on professional craft and design consistency.",
+    "github_url": "https://github.com/dammyjay93/interface-design"
+  },
+  {
+    "name": "tailwind-css-patterns",
+    "type": "reference",
+    "description": "Build modern, responsive user interfaces using expert Tailwind CSS utility-first patterns and modern CSS best practices.",
+    "github_url": "https://github.com/giuseppe-trisciuoglio/developer-kit"
+  },
+  {
+    "name": "ui-ux-pro-max",
+    "type": "reference",
+    "description": "Advanced UI/UX design intelligence featuring 50+ styles, 97 palettes, and 9 technology stacks for building professional interfaces.",
+    "github_url": "https://github.com/sickn33/antigravity-awesome-skills"
+  },
+  {
+    "name": "wcag-audit-patterns",
+    "type": "reference",
+    "description": "Conduct WCAG 2.2 accessibility audits with automated and manual testing, providing remediation guidance for fixing violations and accessible design.",
+    "github_url": "https://github.com/wshobson/agents"
   }
 ]

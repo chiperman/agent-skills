@@ -16,6 +16,8 @@ const CONTENT_SKILLS_DIR = path.join(ROOT_DIR, 'src', 'content', 'skills');
 const SKILLS_JSON_PATH = path.join(ROOT_DIR, 'src', 'data', 'skills.json');
 const README_PATH = path.join(ROOT_DIR, 'README.md');
 
+const MY_REPO_URL = 'https://github.com/chiperman/agent-skills';
+
 // Ensure directories exist
 fs.ensureDirSync(PUBLIC_DOWNLOADS_DIR);
 fs.ensureDirSync(PUBLIC_RAW_DIR);
@@ -27,6 +29,7 @@ fs.emptyDirSync(PUBLIC_DOWNLOADS_DIR);
 fs.emptyDirSync(PUBLIC_RAW_DIR);
 
 function updateReadme(skills) {
+    console.log(`📝 Updating README.md with ${skills.length} skills...`);
     let readme = fs.readFileSync(README_PATH, 'utf8');
 
     // 1. Update Skills Table
@@ -44,7 +47,10 @@ function updateReadme(skills) {
     readme = readme.replace(tableRegex, `${tableHeader}\n${tableRows}\n`);
 
     // 2. Update Installation Commands
-    const installCommands = skills.map(s => s.install_command).join('\n');
+    const installCommands = skills
+        .map(s => s.install_command)
+        .filter(Boolean)
+        .join('\n');
     
     // We want to keep the header and structure but replace the command list
     const newInstallSection = "```bash\n" + 
@@ -55,45 +61,47 @@ function updateReadme(skills) {
         "```";
     
     const startMarker = '### Remote (Recommended)';
+    const startMarkerRegex = '### Remote \\(Recommended\\)';
     const endMarker = '## Usage';
-    const sectionRegex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`);
+    const sectionRegex = new RegExp(`${startMarkerRegex}[\\s\\S]+?${endMarker}`);
     
-    readme = readme.replace(sectionRegex, `${startMarker}\n\nInstall skills directly using [Skills CLI](https://skills.sh):\n\n${newInstallSection}\n\n${endMarker}`);
+    const newSection = `${startMarker}\n\nInstall skills directly using [Skills CLI](https://skills.sh):\n\n${newInstallSection}\n\n`;
+    
+    if (sectionRegex.test(readme)) {
+        readme = readme.replace(sectionRegex, newSection + endMarker);
+    } else {
+        console.warn('⚠️ Could not find Installation section in README.md, skipping replacement.');
+    }
 
     fs.writeFileSync(README_PATH, readme);
     console.log('✅ README.md updated with latest skills data.');
 }
 
 async function main() {
-    console.log('🔍 Reading skills configuration...');
     const skills = JSON.parse(fs.readFileSync(SKILLS_JSON_PATH, 'utf8'));
+    const processedSkills = [];
 
     for (const skill of skills) {
-        const { name, description, type, github_url, install_command } = skill;
+        const { name, type, github_url } = skill;
         const skillDirPath = path.join(SKILLS_DIR, name);
         const hasLocalSource = fs.existsSync(skillDirPath);
 
         console.log(`📦 Processing skill: ${name} (${hasLocalSource ? 'Local' : 'External'})`);
 
         let content = '';
-        let frontmatter = {
-            name,
-            description,
-            type,
-            github_url,
-            install_command
-        };
+        let frontmatter = { ...skill };
 
+        // 1. Handle Local Source (Personal Skills)
         if (hasLocalSource) {
             const skillMdPath = path.join(skillDirPath, 'SKILL.md');
             if (fs.existsSync(skillMdPath)) {
-                // 1. Parse local SKILL.md
                 const fileContent = fs.readFileSync(skillMdPath, 'utf8');
                 const parsed = matter(fileContent);
                 content = parsed.content;
+                // Merge frontmatter: Local SKILL.md takes priority
                 frontmatter = { ...frontmatter, ...parsed.data };
 
-                // 2. Create ZIP
+                // Create ZIP
                 const zip = new AdmZip();
                 const skillFiles = globSync('**/*', {
                     cwd: skillDirPath,
@@ -112,20 +120,36 @@ async function main() {
                 zip.writeZip(zipPath);
                 console.log(`   ✅ Zip created: ${name}.zip`);
 
-                // 3. Copy SKILL.md to public/raw for client-side fetching
+                // Copy SKILL.md to public/raw
                 const rawDestPath = path.join(PUBLIC_RAW_DIR, `${name}.md`);
                 fs.copySync(skillMdPath, rawDestPath);
-                console.log(`   ✅ Raw markdown synced to: public/raw/${name}.md`);
+                console.log(`   ✅ Raw markdown synced: public/raw/${name}.md`);
             }
+        }
+
+        // 2. Auto-generate Install Command if missing
+        if (!frontmatter.install_command) {
+            const repoUrl = type === 'personal' ? MY_REPO_URL : github_url;
+            console.log(`🛠️ Generating command for ${name}: type=${type}, url=${repoUrl}`);
+            if (repoUrl) {
+                frontmatter.install_command = `npx skills add ${repoUrl} --skill ${name}`;
+            }
+        }
+
+        // 3. Fallback GitHub URL for personal skills
+        if (type === 'personal' && !frontmatter.github_url) {
+            frontmatter.github_url = MY_REPO_URL;
         }
 
         // 4. Sync to src/content/skills
         const destPath = path.join(CONTENT_SKILLS_DIR, `${name}.md`);
         fs.writeFileSync(destPath, matter.stringify(content, frontmatter));
         console.log(`   ✅ Content collection synced: src/content/skills/${name}.md`);
+
+        processedSkills.push(frontmatter);
     }
 
-    updateReadme(skills);
+    updateReadme(processedSkills);
     console.log('🎉 Asset preparation complete!');
 }
 

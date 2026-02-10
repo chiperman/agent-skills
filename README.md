@@ -1,5 +1,7 @@
 # Agent Skills
 
+[English] | [**中文版**](./README.zh.md)
+
 A collection of high-quality AI agent skills, designed to enhance development workflows with standardized expert knowledge.
 
 ## Skills
@@ -9,15 +11,22 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 
 | Skill | Category | Description |
 | :--- | :--- | :--- |
-| **[git-commit-expert](./skills/git-commit-expert/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. |
+| **[git-commit-expert](./skills/git-commit-expert/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
 | **[find-skills](https://github.com/vercel-labs/skills)** | Reference | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
-| **[frontend-design](https://github.com/anthropics/skills)** | Reference | Create distinctive, production-grade frontend interfaces with high design quality (websites, landing pages, dashboards, React components, etc.). Generates creative, polished code and UI design that avoids generic AI aesthetics. |
-| **[canvas-design](https://github.com/anthropics/skills)** | Reference | Create beautiful visual art in .png and .pdf documents using design philosophy. Used for creating posters, art, or other static pieces with original visual designs. |
+| **[frontend-design](https://github.com/anthropics/skills)** | Reference | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
+| **[canvas-design](https://github.com/anthropics/skills)** | Reference | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |
 | **[baseline-ui](https://github.com/ibelick/ui-skills)** | Reference | Enforces an opinionated UI baseline to prevent AI-generated interface slop. |
 | **[fixing-accessibility](https://github.com/ibelick/ui-skills)** | Reference | Fix accessibility issues. Ensure the component is accessible to all users. |
 | **[fixing-motion-performance](https://github.com/ibelick/ui-skills)** | Reference | Fix animation performance issues. Optimize animations and interactions. |
 | **[web-design-guidelines](https://github.com/vercel-labs/agent-skills)** | Reference | Review UI code for Web Interface Guidelines compliance. |
 | **[fixing-metadata](https://github.com/ibelick/ui-skills)** | Reference | Ship correct, complete metadata for SEO and performance optimization. |
+| **[12-principles-of-animation](https://github.com/raphaelsalaja/userinterface-wiki)** | Reference | Apply Disney's 12 principles to web interfaces to create natural, organic, and lifelike motion that enhances user engagement. |
+| **[design-lab](https://github.com/0xdesign/design-plugin)** | Reference | Conduct interactive design exploration, interviews, and variant generation to refine UI designs through iterative feedback. |
+| **[interaction-design](https://github.com/wshobson/agents)** | Reference | Design and implement delightful microinteractions, motion transitions, and user feedback patterns for seamless user experiences. |
+| **[interface-design](https://github.com/dammyjay93/interface-design)** | Reference | Build high-quality dashboards, admin panels, and SaaS interfaces with a focus on professional craft and design consistency. |
+| **[tailwind-css-patterns](https://github.com/giuseppe-trisciuoglio/developer-kit)** | Reference | Build modern, responsive user interfaces using expert Tailwind CSS utility-first patterns and modern CSS best practices. |
+| **[ui-ux-pro-max](https://github.com/sickn33/antigravity-awesome-skills)** | Reference | Advanced UI/UX design intelligence featuring 50+ styles, 97 palettes, and 9 technology stacks for building professional interfaces. |
+| **[wcag-audit-patterns](https://github.com/wshobson/agents)** | Reference | Conduct WCAG 2.2 accessibility audits with automated and manual testing, providing remediation guidance for fixing violations and accessible design. |
 
 ## Installation
 
@@ -31,14 +40,21 @@ npx skills add https://github.com/chiperman/agent-skills
 
 # OR install specific skills from their official sources (Recommended for latest updates)
 npx skills add https://github.com/chiperman/agent-skills --skill git-commit-expert
+npx skills add https://github.com/vercel-labs/skills --skill find-skills
+npx skills add https://github.com/anthropics/skills --skill frontend-design
+npx skills add https://github.com/anthropics/skills --skill canvas-design
 npx skills add https://github.com/ibelick/ui-skills --skill baseline-ui
 npx skills add https://github.com/ibelick/ui-skills --skill fixing-accessibility
 npx skills add https://github.com/ibelick/ui-skills --skill fixing-motion-performance
 npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
 npx skills add https://github.com/ibelick/ui-skills --skill fixing-metadata
-npx skills add https://github.com/vercel-labs/skills --skill find-skills
-npx skills add https://github.com/anthropics/skills --skill frontend-design
-npx skills add https://github.com/anthropics/skills --skill canvas-design
+npx skills add https://github.com/raphaelsalaja/userinterface-wiki --skill 12-principles-of-animation
+npx skills add https://github.com/0xdesign/design-plugin --skill design-lab
+npx skills add https://github.com/wshobson/agents --skill interaction-design
+npx skills add https://github.com/dammyjay93/interface-design --skill interface-design
+npx skills add https://github.com/giuseppe-trisciuoglio/developer-kit --skill tailwind-css-patterns
+npx skills add https://github.com/sickn33/antigravity-awesome-skills --skill ui-ux-pro-max
+npx skills add https://github.com/wshobson/agents --skill wcag-audit-patterns
 ```
 
 ## Usage
@@ -79,13 +95,22 @@ To achieve the highest quality code delivery, we recommend following this logica
 
 ## Maintenance
 
-This project is configuration-driven. All skill metadata is managed in a single JSON file.
+This project is configuration-driven. All metadata is managed in `src/data/skills.json` and synchronized via script.
 
 ### How to Update
-1. **Edit Config**: Modify `src/data/skills.json`.
-   - **Personal**: Set `type: "personal"` and ensure the source directory exists in `skills/`.
-   - **Reference**: Set `type: "reference"`. No local files needed.
-2. **Sync Assets**: Run the preparation script to synchronize content and update this README:
+1. **Add/Edit Skill**:
+   - **Personal Skills**: 
+     1. Create a directory in `skills/<name>/`.
+     2. Write your content in `skills/<name>/SKILL.md` (include `name` and `description` in frontmatter).
+     3. Add `{"name": "<name>", "type": "personal"}` to `src/data/skills.json`.
+   - **Reference Skills**: 
+     1. Just add the entry to `src/data/skills.json` with `description` and `github_url`.
+     2. Set `type: "reference"`.
+2. **Sync & Generate**:
+   Run the following command to update the website, generate ZIP assets, and refresh this README:
    ```bash
-   node scripts/prepare-assets.js
+   npm run prepare
    ```
+
+> [!NOTE]
+> The `install_command` is automatically generated by the script based on the `github_url` and `name`.
