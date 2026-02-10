@@ -19,9 +19,9 @@ const isPersonal = skill.data.type === 'personal';
     data-skill-name={skill.data.name}
     data-type={skill.data.type}
 >
-    <div class="p-5 md:p-6 flex items-start gap-4">
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center justify-between gap-3 mb-2">
+    <div class="p-5 md:p-6 flex items-start gap-4 h-full">
+      <div class:list={["flex-1 min-w-0 flex flex-col h-full", isPersonal && "pr-8"]}>
+        <div class="flex items-center justify-between gap-3 mb-2 shrink-0">
           <h2 class="text-xl md:text-2xl font-bold text-notebook-ink font-heading group-hover:text-notebook-interactive transition-colors truncate">
             {skill.data.name}
           </h2>
@@ -38,12 +38,12 @@ const isPersonal = skill.data.type === 'personal';
           )}
         </div>
         
-        <p class="text-notebook-secondary text-sm md:text-base font-body leading-relaxed line-clamp-2 transition-colors group-hover:text-notebook-ink mb-4">
+        <p class="text-notebook-secondary text-sm md:text-base font-body leading-relaxed transition-colors group-hover:text-notebook-ink mb-6">
           {skill.data.description}
         </p>
 
         {!isPersonal && skill.data.install_command && (
-            <div class="flex items-center gap-2 p-1.5 bg-gray-50/50 border border-notebook-decor rounded-xl group/cmd w-full">
+            <div class="mt-auto flex items-center gap-2 p-1.5 bg-gray-50/50 border border-notebook-decor rounded-xl group/cmd w-full">
                 <div class="relative flex-1 min-w-0 flex items-center bg-white border border-notebook-decor rounded-lg shadow-inner px-2.5 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="size-3 text-notebook-ink/30 shrink-0 mr-2" aria-hidden="true"><polyline points="4 17 10 11 4 5"/></svg>
                     <code class="flex-1 text-[10px] md:text-[11px] font-mono text-notebook-ink truncate tabular-nums">
