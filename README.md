@@ -1,7 +1,5 @@
 # Agent Skills
 
-[English] | [**中文版**](./README.zh.md)
-
 A collection of high-quality AI agent skills, designed to enhance development workflows with standardized expert knowledge.
 
 ## Skills
@@ -11,7 +9,7 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 
 | Skill | Category | Description |
 | :--- | :--- | :--- |
-| **[git-commit-expert](./skills/git-commit-expert/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
+| **[git-commit](./skills/git-commit/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
 | **[find-skills](https://github.com/vercel-labs/skills)** | Reference | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | Reference | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
 | **[canvas-design](https://github.com/anthropics/skills)** | Reference | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |
@@ -39,7 +37,7 @@ Install skills directly using [Skills CLI](https://skills.sh):
 npx skills add https://github.com/chiperman/agent-skills
 
 # OR install specific skills from their official sources (Recommended for latest updates)
-npx skills add https://github.com/chiperman/agent-skills --skill git-commit-expert
+npx skills add https://github.com/chiperman/agent-skills --skill git-commit
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/anthropics/skills --skill frontend-design
 npx skills add https://github.com/anthropics/skills --skill canvas-design
