@@ -247,26 +247,8 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
 
   document.addEventListener('click', async (e) => {
     const target = e.target as HTMLElement;
-    const card = target.closest('.skill-card') as HTMLElement;
-    
-    if (card) {
-        // If clicking interactive elements inside card, do nothing
-        if (target.closest('.copy-install-btn') || target.closest('a')) return;
 
-        const type = card.dataset.type;
-        const name = card.dataset.skillName || '';
-
-        if (type === 'personal') {
-            showDetail(name, card);
-        }
-        return;
-    }
-
-    if (target.closest('.back-to-list')) {
-        hideDetail();
-        return;
-    }
-
+    // 1. Handle Copy Raw Button
     const copyRawBtn = target.closest('.copy-raw-btn') as HTMLButtonElement;
     if (copyRawBtn) {
         const skillName = copyRawBtn.dataset.skill || '';
@@ -286,6 +268,7 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
         return;
     }
 
+    // 2. Handle Copy Install Button
     const copyBtn = target.closest('.copy-install-btn') as HTMLButtonElement;
     if (copyBtn) {
         const command = copyBtn.dataset.command || '';
@@ -296,6 +279,28 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
             COPIED!
         `;
         setTimeout(() => copyBtn.innerHTML = original, 2000);
+        return;
+    }
+
+    // 3. Handle Back to List Button
+    if (target.closest('.back-to-list')) {
+        hideDetail();
+        return;
+    }
+
+    // 4. Handle Skill Card Click (Personal only)
+    const card = target.closest('.skill-card') as HTMLElement;
+    if (card) {
+        // If clicking other interactive elements inside card (like GitHub link), do nothing
+        if (target.closest('a')) return;
+
+        const type = card.dataset.type;
+        const name = card.dataset.skillName || '';
+
+        if (type === 'personal') {
+            showDetail(name, card);
+        }
+        return;
     }
   });
 
