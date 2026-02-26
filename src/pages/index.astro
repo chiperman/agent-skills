@@ -361,7 +361,25 @@ const pageDescription = "Explore a collection of high-quality, practical skills 
         return;
     }
 
-    // 4. Handle Skill Card Click (Personal only)
+    // 4. Handle Mobile TOC Toggle
+    const tocToggle = target.closest('.mobile-toc-toggle') as HTMLButtonElement;
+    if (tocToggle) {
+        const content = tocToggle.nextElementSibling as HTMLElement;
+        const icon = tocToggle.querySelector('.chevron-icon') as HTMLElement;
+        const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (content && content.classList.contains('mobile-toc-content')) {
+            const newExpanded = !isExpanded;
+            tocToggle.setAttribute('aria-expanded', String(newExpanded));
+            content.classList.toggle('hidden', !newExpanded);
+            if (icon) {
+                icon.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+        return;
+    }
+
+    // 5. Handle Skill Card Click (Personal only)
     const card = target.closest('.skill-card') as HTMLElement;
     if (card) {
         // If clicking other interactive elements inside card (like GitHub link), do nothing
