@@ -68,20 +68,23 @@ description: 这是一个描述技能核心功能的简短句子。
 
 ---
 
-## 3. 同步与生效 (Sync)
+## 3. 同步与部署 (全自动化)
 
-完成上述编辑后，运行以下命令让所有变更在网站和文档中生效：
+本项目配备了**全自动 CI/CD 流水线**。你不再需要手动运行同步脚本。
 
+### 工作流
+1. **推送变更**：只需将对 `src/data/skills.json` 或 `skills/` 目录的修改提交并 `git push` 到 GitHub。
+2. **云端自动处理**：GitHub Actions 会自动执行以下操作：
+   - 刷新 `README.md` 和 `README.zh.md` 中的技能表格与命令。
+   - **自动将 README 的变更提交并推回仓库**（以 Bot 名义）。
+   - 构建网站并部署最新版本到 GitHub Pages。
+
+### 本地预览 (可选)
+如果你想在推送前预览 `SKILL.md` 或网站效果：
 ```bash
-npm run build
+npm run dev
 ```
-
-### 该命令会自动执行以下操作：
-1. **生成 Markdown 集合**：将数据同步到 `src/content/skills/`（Astro 使用）。
-2. **打包资产**：为 Personal Skills 自动生成 `.zip` 压缩包存入 `public/downloads/`。
-3. **导出原始文件**：将 `SKILL.md` 拷贝到 `public/raw/` 供快捷复制。
-4. **生成 JSON API**：在 `public/api/skills/` 为 AI 生成结构化接口文件。
-5. **更新 README**：自动刷新根目录 `README.md` 和 `README.zh.md` 中的技能表格和安装命令列表（需配置）。
+访问 `http://localhost:4321/` 即可实时查看变更。
 
 ---
 

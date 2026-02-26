@@ -68,20 +68,23 @@ Edit `src/data/skills.json` directly and add the following configuration.
 
 ---
 
-## 3. Sync & Apply Changes (Sync)
+## 3. Sync & Deploy (Fully Automated)
 
-After completing the edits above, run the following command to apply all changes to the website and documentation:
+This project features a **fully automated CI/CD pipeline**. You don't need to run manual sync scripts anymore.
 
+### The Workflow
+1. **Push Changes**: Simply commit and `git push` your changes to `src/data/skills.json` or the `skills/` directory.
+2. **Auto-Processing**: GitHub Actions will automatically:
+   - Update the tables and commands in `README.md` and `README.zh.md`.
+   - **Commit the README changes** back to the repository for you.
+   - Build the website and deploy the latest version to GitHub Pages.
+
+### Local Preview (Optional)
+If you want to preview your `SKILL.md` or website locally before pushing:
 ```bash
-npm run build
+npm run dev
 ```
-
-### What this command does:
-1. **Generate Markdown Collections**: Syncs data to `src/content/skills/` (used by Astro).
-2. **Package Assets**: Automatically generates `.zip` archives for Personal Skills in `public/downloads/`.
-3. **Export Raw Files**: Copies `SKILL.md` to `public/raw/` for quick copying.
-4. **Generate JSON API**: Creates structured interface files for AI in `public/api/skills/`.
-5. **Update README**: Refreshes the skills table and installation command list in the root `README.md`.
+Navigate to `http://localhost:4321/` to see your changes in real-time.
 
 ---
 

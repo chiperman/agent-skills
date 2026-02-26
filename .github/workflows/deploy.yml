@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for proper git operations
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -28,6 +30,19 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Commit and push README changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          # Check if README files changed
+          git add README.md README.zh.md
+          if git diff --cached --quiet; then
+            echo "No changes to README files. Skipping commit."
+          else
+            git commit -m "chore: 自动化同步 README 技能列表 [skip ci]"
+            git push
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
