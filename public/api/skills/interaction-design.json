@@ -1,0 +1,7 @@
+{
+  "name": "interaction-design",
+  "type": "reference",
+  "description": "Design and implement delightful microinteractions, motion transitions, and user feedback patterns for seamless user experiences.",
+  "github_url": "https://github.com/wshobson/agents",
+  "install_command": "npx skills add https://github.com/wshobson/agents --skill interaction-design"
+}

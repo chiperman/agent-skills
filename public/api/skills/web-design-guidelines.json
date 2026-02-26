@@ -1,0 +1,7 @@
+{
+  "name": "web-design-guidelines",
+  "type": "reference",
+  "description": "Review UI code for Web Interface Guidelines compliance.",
+  "github_url": "https://github.com/vercel-labs/agent-skills",
+  "install_command": "npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines"
+}

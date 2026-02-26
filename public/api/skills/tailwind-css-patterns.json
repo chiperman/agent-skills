@@ -1,0 +1,7 @@
+{
+  "name": "tailwind-css-patterns",
+  "type": "reference",
+  "description": "Build modern, responsive user interfaces using expert Tailwind CSS utility-first patterns and modern CSS best practices.",
+  "github_url": "https://github.com/giuseppe-trisciuoglio/developer-kit",
+  "install_command": "npx skills add https://github.com/giuseppe-trisciuoglio/developer-kit --skill tailwind-css-patterns"
+}

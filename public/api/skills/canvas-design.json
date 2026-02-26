@@ -1,0 +1,7 @@
+{
+  "name": "canvas-design",
+  "type": "reference",
+  "description": "Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements.",
+  "github_url": "https://github.com/anthropics/skills",
+  "install_command": "npx skills add https://github.com/anthropics/skills --skill canvas-design"
+}

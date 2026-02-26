@@ -1,0 +1,7 @@
+{
+  "name": "design-lab",
+  "type": "reference",
+  "description": "Conduct interactive design exploration, interviews, and variant generation to refine UI designs through iterative feedback.",
+  "github_url": "https://github.com/0xdesign/design-plugin",
+  "install_command": "npx skills add https://github.com/0xdesign/design-plugin --skill design-lab"
+}

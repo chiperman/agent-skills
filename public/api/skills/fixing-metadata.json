@@ -1,0 +1,7 @@
+{
+  "name": "fixing-metadata",
+  "type": "reference",
+  "description": "Ship correct, complete metadata for SEO and performance optimization.",
+  "github_url": "https://github.com/ibelick/ui-skills",
+  "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-metadata"
+}

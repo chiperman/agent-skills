@@ -1,0 +1,7 @@
+{
+  "name": "12-principles-of-animation",
+  "type": "reference",
+  "description": "Apply Disney's 12 principles to web interfaces to create natural, organic, and lifelike motion that enhances user engagement.",
+  "github_url": "https://github.com/raphaelsalaja/userinterface-wiki",
+  "install_command": "npx skills add https://github.com/raphaelsalaja/userinterface-wiki --skill 12-principles-of-animation"
+}

@@ -1,0 +1,31 @@
+---
+interface Props {
+  href?: string | null;
+  label?: string;
+  class?: string;
+  title?: string;
+  [key: string]: any; // Allow extra attributes like target, rel, data-*
+}
+
+const { 
+  href, 
+  class: className = "", 
+  title, 
+  label,
+  ...rest 
+} = Astro.props;
+
+const Element = href ? 'a' : 'button';
+const baseClass = "flex items-center gap-2 px-3 md:px-4 py-2 text-[11px] font-bold tracking-widest border border-notebook-decor text-notebook-secondary hover:text-notebook-ink hover:border-notebook-ink transition-all rounded-xl bg-white shadow-sm active:scale-95 whitespace-nowrap";
+---
+
+<Element 
+  href={href ?? undefined} 
+  class:list={[baseClass, className]} 
+  title={title}
+  aria-label={title}
+  {...rest}
+>
+  <slot name="icon" />
+  <span class="hidden md:block">{label}</span>
+</Element>

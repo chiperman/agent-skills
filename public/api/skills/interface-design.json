@@ -1,0 +1,7 @@
+{
+  "name": "interface-design",
+  "type": "reference",
+  "description": "Build high-quality dashboards, admin panels, and SaaS interfaces with a focus on professional craft and design consistency.",
+  "github_url": "https://github.com/dammyjay93/interface-design",
+  "install_command": "npx skills add https://github.com/dammyjay93/interface-design --skill interface-design"
+}

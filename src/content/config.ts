@@ -8,7 +8,12 @@ const skillsCollection = defineCollection({
         type: z.enum(['personal', 'reference']).default('reference'),
         github_url: z.string().url().optional(),
         install_command: z.string().optional(),
-    }),
+    }).transform((data) => ({
+        ...data,
+        // Derived properties to reduce hardcoding in UI
+        zipUrl: data.type === 'personal' ? `/agent-skills/downloads/${data.name}.zip` : null,
+        rawUrl: data.type === 'personal' ? `/agent-skills/raw/${data.name}.md` : null,
+    })),
 });
 
 export const collections = {

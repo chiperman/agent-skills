@@ -1,0 +1,7 @@
+{
+  "name": "frontend-design",
+  "type": "reference",
+  "description": "Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics.",
+  "github_url": "https://github.com/anthropics/skills",
+  "install_command": "npx skills add https://github.com/anthropics/skills --skill frontend-design"
+}

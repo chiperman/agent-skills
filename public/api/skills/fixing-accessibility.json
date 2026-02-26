@@ -1,0 +1,7 @@
+{
+  "name": "fixing-accessibility",
+  "type": "reference",
+  "description": "Fix accessibility issues. Ensure the component is accessible to all users.",
+  "github_url": "https://github.com/ibelick/ui-skills",
+  "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-accessibility"
+}

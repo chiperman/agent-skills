@@ -1,0 +1,7 @@
+{
+  "name": "fixing-motion-performance",
+  "type": "reference",
+  "description": "Fix animation performance issues. Optimize animations and interactions.",
+  "github_url": "https://github.com/ibelick/ui-skills",
+  "install_command": "npx skills add https://github.com/ibelick/ui-skills --skill fixing-motion-performance"
+}

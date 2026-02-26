@@ -1,0 +1,7 @@
+{
+  "name": "find-skills",
+  "type": "reference",
+  "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", or express interest in extending capabilities.",
+  "github_url": "https://github.com/vercel-labs/skills",
+  "install_command": "npx skills add https://github.com/vercel-labs/skills --skill find-skills"
+}

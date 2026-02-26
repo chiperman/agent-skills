@@ -1,0 +1,8 @@
+{
+  "name": "git-commit",
+  "type": "personal",
+  "description": "A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols.",
+  "license": "MIT",
+  "install_command": "npx skills add https://github.com/chiperman/agent-skills --skill git-commit",
+  "github_url": "https://github.com/chiperman/agent-skills"
+}

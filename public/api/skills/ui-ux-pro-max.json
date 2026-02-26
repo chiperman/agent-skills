@@ -1,0 +1,7 @@
+{
+  "name": "ui-ux-pro-max",
+  "type": "reference",
+  "description": "Advanced UI/UX design intelligence featuring 50+ styles, 97 palettes, and 9 technology stacks for building professional interfaces.",
+  "github_url": "https://github.com/sickn33/antigravity-awesome-skills",
+  "install_command": "npx skills add https://github.com/sickn33/antigravity-awesome-skills --skill ui-ux-pro-max"
+}

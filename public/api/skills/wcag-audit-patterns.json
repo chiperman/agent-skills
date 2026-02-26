@@ -1,0 +1,7 @@
+{
+  "name": "wcag-audit-patterns",
+  "type": "reference",
+  "description": "Conduct WCAG 2.2 accessibility audits with automated and manual testing, providing remediation guidance for fixing violations and accessible design.",
+  "github_url": "https://github.com/wshobson/agents",
+  "install_command": "npx skills add https://github.com/wshobson/agents --skill wcag-audit-patterns"
+}
