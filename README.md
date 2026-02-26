@@ -1,11 +1,13 @@
 # Agent Skills
 
+English | [简体中文](./README.zh.md)
+
 A collection of high-quality AI agent skills, designed to enhance development workflows with standardized expert knowledge.
 
 ## Skills
 
 > [!TIP]
-> This repository is a **curated collection** of high-quality skills. Except for `git-commit-expert`, most skills are sourced from the community and might not always be the latest version. For the absolute latest updates, we recommend installing them directly from the [Official Skills Registry](https://skills.sh).
+> This repository is a **curated collection** of high-quality skills. Except for `git-commit`, most skills are sourced from the community and might not always be the latest version. For the absolute latest updates, we recommend installing them directly from the [Official Skills Registry](https://skills.sh).
 
 <!-- SKILLS_TABLE_START -->
 | Skill | Category | Description |
@@ -91,9 +93,9 @@ To achieve the highest quality code delivery, we recommend following this logica
 ### Step 4: Commit
 
 - **Trigger**: "Code is perfect, package it for storage."
-- **Activates**: git-commit-expert
+- **Activates**: git-commit
 - **Example**: "Code is ready, help me commit it."
-    - **Effect**: Generate standard commit message like feat(auth): implement user login card, keeping Git history clean.
+- **Effect**: Generate standard commit message like `feat(auth): implement user login card`, keeping Git history clean.
 
 ## Maintenance
 

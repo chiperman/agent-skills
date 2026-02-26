@@ -1,38 +1,40 @@
-# Agent Skills 维护与扩展指南
+# Maintenance & Contribution Guide
 
-本仓库采用配置驱动的自动化工作流。通过修改 `src/data/skills.json` 并配合 `skills/` 目录，系统会自动生成网页内容、压缩包资产、AI 可读 API 以及更新根目录的 `README.md`。
+English | [简体中文](./how-to-add-skills.zh.md)
+
+This repository uses a configuration-driven automated workflow. By modifying `src/data/skills.json` and the `skills/` directory, the system automatically generates website content, zip assets, AI-readable APIs, and updates the root `README.md`.
 
 ---
 
-## 1. 如何创建自建技能 (Personal Skill)
+## 1. How to Create a Personal Skill
 
-自建技能是指由你亲自编写、包含完整 `SKILL.md` 指令的技能。
+A Personal Skill is one where you write the complete `SKILL.md` instructions yourself.
 
-### 第一步：创建目录结构
-在项目根目录的 `skills/` 下新建一个与技能名一致的文件夹。
+### Step 1: Create Directory Structure
+Create a new folder under `skills/` in the project root with the same name as your skill.
 ```bash
 mkdir -p skills/my-new-skill
 ```
 
-### 第二步：编写技能文档
-在新建的文件夹内创建 `SKILL.md`。必须包含 `name` 和 `description` 元数据。
+### Step 2: Write Skill Document
+Create `SKILL.md` inside the new folder. It must include `name` and `description` metadata.
 ```markdown
 ---
 name: my-new-skill
-description: 这是一个描述技能核心功能的简短句子。
+description: A short sentence describing the core functionality.
 ---
 
-# 技能名称
+# Skill Name
 
-### 1. 核心指令
-... 你的 AI 指令内容 ...
+### 1. Core Instructions
+... Your AI instruction content ...
 
-### 2. 执行流程
+### 2. Workflow
 ...
 ```
 
-### 第三步：注册技能
-编辑 `src/data/skills.json`，在数组中添加该技能的信息。
+### Step 3: Register the Skill
+Edit `src/data/skills.json` and add the skill information to the array.
 ```json
 {
   "name": "my-new-skill",
@@ -42,49 +44,49 @@ description: 这是一个描述技能核心功能的简短句子。
 
 ---
 
-## 2. 如何添加引用技能 (Reference Skill)
+## 2. How to Add a Reference Skill
 
-引用技能是指指向外部优秀开源项目的技能，通常仅在本项目中做收录推荐。
+A Reference Skill points to an existing high-quality open-source skill project, usually for curation and recommendation within this project.
 
-### 第一步：获取信息
-你需要准备好该技能的：
-- **名称 (name)**
-- **功能描述 (description)**
-- **GitHub 仓库地址 (github_url)**
+### Step 1: Gather Information
+You will need the skill's:
+- **Name (name)**
+- **Description (description)**
+- **GitHub Repository URL (github_url)**
 
-### 第二步：注册技能
-直接编辑 `src/data/skills.json`，添加如下配置。
+### Step 2: Register the Skill
+Edit `src/data/skills.json` directly and add the following configuration.
 ```json
 {
   "name": "external-awesome-skill",
   "type": "reference",
-  "description": "该技能可以帮助 AI 处理 X 任务，提升 Y 效率。",
+  "description": "This skill helps AI handle X tasks and improves Y efficiency.",
   "github_url": "https://github.com/someone/external-awesome-skill"
 }
 ```
-*注意：引用技能不需要在 `skills/` 目录下创建任何文件。*
+*Note: Reference skills do not require any files in the `skills/` directory.*
 
 ---
 
-## 3. 同步与生效 (Sync)
+## 3. Sync & Apply Changes (Sync)
 
-完成上述编辑后，运行以下命令让所有变更在网站和文档中生效：
+After completing the edits above, run the following command to apply all changes to the website and documentation:
 
 ```bash
 npm run build
 ```
 
-### 该命令会自动执行以下操作：
-1. **生成 Markdown 集合**：将数据同步到 `src/content/skills/`（Astro 使用）。
-2. **打包资产**：为 Personal Skills 自动生成 `.zip` 压缩包存入 `public/downloads/`。
-3. **导出原始文件**：将 `SKILL.md` 拷贝到 `public/raw/` 供快捷复制。
-4. **生成 JSON API**：在 `public/api/skills/` 为 AI 生成结构化接口文件。
-5. **更新 README**：自动刷新根目录 `README.md` 中的技能表格和安装命令列表。
+### What this command does:
+1. **Generate Markdown Collections**: Syncs data to `src/content/skills/` (used by Astro).
+2. **Package Assets**: Automatically generates `.zip` archives for Personal Skills in `public/downloads/`.
+3. **Export Raw Files**: Copies `SKILL.md` to `public/raw/` for quick copying.
+4. **Generate JSON API**: Creates structured interface files for AI in `public/api/skills/`.
+5. **Update README**: Refreshes the skills table and installation command list in the root `README.md`.
 
 ---
 
-## 4. 最佳实践提示
+## 4. Best Practices
 
-- **技能命名**：建议使用小写字母和中划线（kebab-case），例如 `ui-design-pro`。
-- **描述信息**：尽量控制在 20 个汉字以内，以保证首页卡片整齐。
-- **安装测试**：运行 `npm run build` 后，检查 `README.md` 中的 `npx skills add` 命令是否符合预期。
+- **Naming**: Use kebab-case (e.g., `ui-design-pro`).
+- **Descriptions**: Keep them concise to keep the homepage cards tidy.
+- **Testing**: After running `npm run build`, check if the `npx skills add` commands in `README.md` are correct.

@@ -18,7 +18,6 @@ export default function prepareAssetsIntegration(): AstroIntegration {
         const PUBLIC_API_DIR = path.join(rootDir, 'public', 'api', 'skills');
         const CONTENT_SKILLS_DIR = path.join(rootDir, 'src', 'content', 'skills');
         const SKILLS_JSON_PATH = path.join(rootDir, 'src', 'data', 'skills.json');
-        const README_PATH = path.join(rootDir, 'README.md');
         const MY_REPO_URL = 'https://github.com/chiperman/agent-skills';
 
         logger.info('🚀 Starting asset preparation...');
@@ -98,16 +97,28 @@ export default function prepareAssetsIntegration(): AstroIntegration {
           processedSkills.push(frontmatter);
         }
 
-        // Robust README.md Update using markers
-        if (fs.existsSync(README_PATH)) {
-          let readme = fs.readFileSync(README_PATH, 'utf8');
+        // Robust README Update for multiple languages
+        const readmeFiles = globSync('README*.md', { cwd: rootDir });
+        
+        for (const filename of readmeFiles) {
+          const filePath = path.join(rootDir, filename);
+          const isZh = filename.includes('.zh');
+          let readme = fs.readFileSync(filePath, 'utf8');
           
           // 1. Update Table
-          const tableHeader = '| Skill | Category | Description |\n| :--- | :--- | :--- |';
+          const tableHeader = isZh 
+            ? '| 技能 | 类别 | 描述 |\n| :--- | :--- | :--- |'
+            : '| Skill | Category | Description |\n| :--- | :--- | :--- |';
+          
           const tableRows = processedSkills.map(s => {
             const isPersonal = s.type === 'personal';
             const link = isPersonal ? `./skills/${s.name}/SKILL.md` : s.github_url;
-            const category = isPersonal ? 'Personal' : 'Reference';
+            const category = isPersonal 
+              ? (isZh ? '个人' : 'Personal') 
+              : (isZh ? '参考' : 'Reference');
+            
+            // Note: Currently description is single-language in JSON. 
+            // We might need a bilingual field if full translation is needed in table.
             return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
           }).join('\n');
           
@@ -133,11 +144,18 @@ export default function prepareAssetsIntegration(): AstroIntegration {
           const installEndIdx = readme.indexOf(installEndMarker);
 
           if (installStartIdx !== -1 && installEndIdx !== -1) {
-            const newInstallSection = `${installStartMarker}\n\`\`\`bash\n# Install this collection (includes all local copies)\nnpx skills add ${MY_REPO_URL}\n\n# OR install specific skills from their official sources (Recommended for latest updates)\n${installCommands}\n\`\`\`\n${installEndMarker}`;
+            const collectionText = isZh 
+              ? '# 安装此集合（包含所有本地副本）' 
+              : '# Install this collection (includes all local copies)';
+            const specificText = isZh 
+              ? '# 或者从官方源安装特定技能（推荐以获取最新更新）' 
+              : '# OR install specific skills from their official sources (Recommended for latest updates)';
+
+            const newInstallSection = `${installStartMarker}\n\`\`\`bash\n${collectionText}\nnpx skills add ${MY_REPO_URL}\n\n${specificText}\n${installCommands}\n\`\`\`\n${installEndMarker}`;
             readme = readme.slice(0, installStartIdx) + newInstallSection + readme.slice(installEndIdx + installEndMarker.length);
           }
           
-          fs.writeFileSync(README_PATH, readme);
+          fs.writeFileSync(filePath, readme);
         }
 
         logger.info(`✅ Asset preparation complete! ${processedSkills.length} skills processed.`);
