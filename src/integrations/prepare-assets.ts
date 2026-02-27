@@ -6,160 +6,186 @@ import { globSync } from 'glob';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 
+interface SkillMetadata {
+  name: string;
+  type: 'personal' | 'reference';
+  description: string;
+  github_url?: string;
+  install_command?: string;
+  [key: string]: any;
+}
+
 export default function prepareAssetsIntegration(): AstroIntegration {
   return {
     name: 'prepare-assets-integration',
     hooks: {
       'astro:config:setup': async ({ config, logger }) => {
         const rootDir = fileURLToPath(config.root);
-        const SKILLS_DIR = path.join(rootDir, 'skills');
-        const PUBLIC_DOWNLOADS_DIR = path.join(rootDir, 'public', 'downloads');
-        const PUBLIC_RAW_DIR = path.join(rootDir, 'public', 'raw');
-        const PUBLIC_API_DIR = path.join(rootDir, 'public', 'api', 'skills');
-        const CONTENT_SKILLS_DIR = path.join(rootDir, 'src', 'content', 'skills');
-        const SKILLS_JSON_PATH = path.join(rootDir, 'src', 'data', 'skills.json');
-        const MY_REPO_URL = 'https://github.com/chiperman/agent-skills';
+        const paths = {
+          skills: path.join(rootDir, 'skills'),
+          publicDownloads: path.join(rootDir, 'public', 'downloads'),
+          publicRaw: path.join(rootDir, 'public', 'raw'),
+          publicApi: path.join(rootDir, 'public', 'api', 'skills'),
+          searchIndex: path.join(rootDir, 'public', 'api', 'search-index.json'),
+          contentSkills: path.join(rootDir, 'src', 'content', 'skills'),
+          skillsJson: path.join(rootDir, 'src', 'data', 'skills.json'),
+          repoUrl: 'https://github.com/chiperman/agent-skills'
+        };
 
-        logger.info('🚀 Starting asset preparation...');
+        logger.info('🚀 Initializing asset preparation...');
 
-        // Ensure directories exist and clean them
-        [PUBLIC_DOWNLOADS_DIR, PUBLIC_RAW_DIR, PUBLIC_API_DIR, CONTENT_SKILLS_DIR].forEach(dir => {
+        // 1. Setup Directories
+        [paths.publicDownloads, paths.publicRaw, paths.publicApi, paths.contentSkills].forEach(dir => {
           fs.ensureDirSync(dir);
           fs.emptyDirSync(dir);
         });
 
-        if (!fs.existsSync(SKILLS_JSON_PATH)) {
-          logger.error(`❌ SKILLS_JSON_PATH not found at ${SKILLS_JSON_PATH}`);
+        if (!fs.existsSync(paths.skillsJson)) {
+          logger.error(`❌ Registry not found: ${paths.skillsJson}`);
           return;
         }
 
-        const skills = JSON.parse(fs.readFileSync(SKILLS_JSON_PATH, 'utf8'));
-        const processedSkills = [];
+        const rawSkills: SkillMetadata[] = JSON.parse(fs.readFileSync(paths.skillsJson, 'utf8'));
+        const processedSkills: SkillMetadata[] = [];
 
-        for (const skill of skills) {
-          const { name, type, github_url } = skill;
-          const skillDirPath = path.join(SKILLS_DIR, name);
-          const hasLocalSource = fs.existsSync(skillDirPath);
-
-          let content = '';
-          let frontmatter = { ...skill };
-
-          if (hasLocalSource) {
-            const skillMdPath = path.join(skillDirPath, 'SKILL.md');
-            if (fs.existsSync(skillMdPath)) {
-              const fileContent = fs.readFileSync(skillMdPath, 'utf8');
-              const parsed = matter(fileContent);
-              content = parsed.content;
-              frontmatter = { ...frontmatter, ...parsed.data };
-
-              // Create ZIP
-              const zip = new AdmZip();
-              const skillFiles = globSync('**/*', {
-                cwd: skillDirPath,
-                ignore: ['node_modules/**', '.DS_Store', 'dist/**', '.git/**']
-              });
-
-              skillFiles.forEach(file => {
-                const filePath = path.join(skillDirPath, file);
-                const stat = fs.statSync(filePath);
-                if (stat.isFile()) {
-                  zip.addLocalFile(filePath, path.dirname(file) === '.' ? '' : path.dirname(file));
-                }
-              });
-
-              const zipPath = path.join(PUBLIC_DOWNLOADS_DIR, `${name}.zip`);
-              zip.writeZip(zipPath);
-
-              // Copy SKILL.md to public/raw
-              const rawDestPath = path.join(PUBLIC_RAW_DIR, `${name}.md`);
-              fs.copySync(skillMdPath, rawDestPath);
-            }
-          }
-
-          if (!frontmatter.install_command) {
-            const repoUrl = type === 'personal' ? MY_REPO_URL : github_url;
-            if (repoUrl) {
-              frontmatter.install_command = `npx skills add ${repoUrl} --skill ${name}`;
-            }
-          }
-
-          if (type === 'personal' && !frontmatter.github_url) {
-            frontmatter.github_url = MY_REPO_URL;
-          }
-
-          const destPath = path.join(CONTENT_SKILLS_DIR, `${name}.md`);
-          fs.writeFileSync(destPath, matter.stringify(content, frontmatter));
-          
-          // Generate AI-readable JSON metadata
-          const apiDestPath = path.join(PUBLIC_API_DIR, `${name}.json`);
-          fs.writeFileSync(apiDestPath, JSON.stringify(frontmatter, null, 2));
-
-          processedSkills.push(frontmatter);
+        // 2. Process Individual Skills
+        for (const skill of rawSkills) {
+          const processed = processSkill(skill, paths, logger);
+          processedSkills.push(processed);
         }
 
-        // Robust README Update for multiple languages
-        const readmeFiles = globSync('README*.md', { cwd: rootDir });
+        // 3. Generate Search Index
+        generateSearchIndex(processedSkills, paths.searchIndex);
+        logger.info(`🔍 Search index generated with ${processedSkills.length} entries.`);
+
+        // 4. Sync Documentation
+        syncReadmeFiles(processedSkills, rootDir, paths.repoUrl);
         
-        for (const filename of readmeFiles) {
-          const filePath = path.join(rootDir, filename);
-          const isZh = filename.includes('.zh');
-          let readme = fs.readFileSync(filePath, 'utf8');
-          
-          // 1. Update Table
-          const tableHeader = isZh 
-            ? '| 技能 | 类别 | 描述 |\n| :--- | :--- | :--- |'
-            : '| Skill | Category | Description |\n| :--- | :--- | :--- |';
-          
-          const tableRows = processedSkills.map(s => {
-            const isPersonal = s.type === 'personal';
-            const link = isPersonal ? `./skills/${s.name}/SKILL.md` : s.github_url;
-            const category = isPersonal 
-              ? (isZh ? '个人' : 'Personal') 
-              : (isZh ? '参考' : 'Reference');
-            
-            // Note: Currently description is single-language in JSON. 
-            // We might need a bilingual field if full translation is needed in table.
-            return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
-          }).join('\n');
-          
-          const tableStartMarker = '<!-- SKILLS_TABLE_START -->';
-          const tableEndMarker = '<!-- SKILLS_TABLE_END -->';
-          const tableStartIdx = readme.indexOf(tableStartMarker);
-          const tableEndIdx = readme.indexOf(tableEndMarker);
-
-          if (tableStartIdx !== -1 && tableEndIdx !== -1) {
-            const newTableSection = `${tableStartMarker}\n${tableHeader}\n${tableRows}\n${tableEndMarker}`;
-            readme = readme.slice(0, tableStartIdx) + newTableSection + readme.slice(tableEndIdx + tableEndMarker.length);
-          }
-
-          // 2. Update Installation Section
-          const installCommands = processedSkills
-            .map(s => s.install_command)
-            .filter(Boolean)
-            .join('\n');
-          
-          const installStartMarker = '<!-- INSTALL_SECTION_START -->';
-          const installEndMarker = '<!-- INSTALL_SECTION_END -->';
-          const installStartIdx = readme.indexOf(installStartMarker);
-          const installEndIdx = readme.indexOf(installEndMarker);
-
-          if (installStartIdx !== -1 && installEndIdx !== -1) {
-            const collectionText = isZh 
-              ? '# 安装此集合（包含所有本地副本）' 
-              : '# Install this collection (includes all local copies)';
-            const specificText = isZh 
-              ? '# 或者从官方源安装特定技能（推荐以获取最新更新）' 
-              : '# OR install specific skills from their official sources (Recommended for latest updates)';
-
-            const newInstallSection = `${installStartMarker}\n\`\`\`bash\n${collectionText}\nnpx skills add ${MY_REPO_URL}\n\n${specificText}\n${installCommands}\n\`\`\`\n${installEndMarker}`;
-            readme = readme.slice(0, installStartIdx) + newInstallSection + readme.slice(installEndIdx + installEndMarker.length);
-          }
-          
-          fs.writeFileSync(filePath, readme);
-        }
-
-        logger.info(`✅ Asset preparation complete! ${processedSkills.length} skills processed.`);
+        logger.info(`✅ Successfully processed ${processedSkills.length} skills.`);
       }
     }
   };
+}
+
+/**
+ * Handles ZIP generation, API metadata, and content sync for a single skill
+ */
+function processSkill(skill: SkillMetadata, paths: any, logger: any): SkillMetadata {
+  const { name, type, github_url } = skill;
+  const skillDirPath = path.join(paths.skills, name);
+  const hasLocalSource = fs.existsSync(skillDirPath);
+
+  let content = '';
+  let frontmatter = { ...skill };
+
+  if (hasLocalSource) {
+    const skillMdPath = path.join(skillDirPath, 'SKILL.md');
+    if (fs.existsSync(skillMdPath)) {
+      const fileContent = fs.readFileSync(skillMdPath, 'utf8');
+      const parsed = matter(fileContent);
+      content = parsed.content;
+      frontmatter = { ...frontmatter, ...parsed.data };
+
+      // Create ZIP
+      const zip = new AdmZip();
+      const skillFiles = globSync('**/*', {
+        cwd: skillDirPath,
+        ignore: ['node_modules/**', '.DS_Store', 'dist/**', '.git/**']
+      });
+
+      skillFiles.forEach(file => {
+        const filePath = path.join(skillDirPath, file);
+        if (fs.statSync(filePath).isFile()) {
+          zip.addLocalFile(filePath, path.dirname(file) === '.' ? '' : path.dirname(file));
+        }
+      });
+      zip.writeZip(path.join(paths.publicDownloads, `${name}.zip`));
+
+      // Copy Raw
+      fs.copySync(skillMdPath, path.join(paths.publicRaw, `${name}.md`));
+    }
+  }
+
+  // Fallback defaults
+  if (!frontmatter.install_command && (type === 'personal' || github_url)) {
+    const sourceUrl = type === 'personal' ? paths.repoUrl : github_url;
+    frontmatter.install_command = `npx skills add ${sourceUrl} --skill ${name}`;
+  }
+
+  if (type === 'personal' && !frontmatter.github_url) {
+    frontmatter.github_url = paths.repoUrl;
+  }
+
+  // Write content and API JSON
+  fs.writeFileSync(path.join(paths.contentSkills, `${name}.md`), matter.stringify(content, frontmatter));
+  fs.writeFileSync(path.join(paths.publicApi, `${name}.json`), JSON.stringify(frontmatter, null, 2));
+
+  return frontmatter;
+}
+
+/**
+ * Generates a lightweight search index for client-side filtering
+ */
+function generateSearchIndex(skills: SkillMetadata[], outputPath: string) {
+  const index = skills.map(s => ({
+    id: s.name,
+    n: s.name.toLowerCase(),
+    d: s.description.toLowerCase(),
+    t: s.type
+  }));
+  fs.ensureDirSync(path.dirname(outputPath));
+  fs.writeFileSync(outputPath, JSON.stringify(index));
+}
+
+/**
+ * Robust README sync for multiple languages
+ */
+function syncReadmeFiles(skills: SkillMetadata[], rootDir: string, repoUrl: string) {
+  const readmeFiles = globSync('README*.md', { cwd: rootDir });
+  
+  for (const filename of readmeFiles) {
+    const filePath = path.join(rootDir, filename);
+    const isZh = filename.includes('.zh');
+    let readme = fs.readFileSync(filePath, 'utf8');
+    
+    // 1. Update Table
+    const tableHeader = isZh 
+      ? '| 技能 | 类别 | 描述 |\n| :--- | :--- | :--- |'
+      : '| Skill | Category | Description |\n| :--- | :--- | :--- |';
+    
+    const tableRows = skills.map(s => {
+      const isPersonal = s.type === 'personal';
+      const link = isPersonal ? `./skills/${s.name}/SKILL.md` : s.github_url;
+      const category = isPersonal ? (isZh ? '个人' : 'Personal') : (isZh ? '参考' : 'Reference');
+      return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
+    }).join('\n');
+    
+    readme = updateSection(readme, 'SKILLS_TABLE', `${tableHeader}\n${tableRows}`);
+
+    // 2. Update Installation Section
+    const installCommands = skills.map(s => s.install_command).filter(Boolean).join('\n');
+    const collectionText = isZh ? '# 安装此集合' : '# Install this collection';
+    const specificText = isZh ? '# 安装特定技能' : '# Install specific skills';
+
+    const installSection = `\`\`\`bash\n${collectionText}\nnpx skills add ${repoUrl}\n\n${specificText}\n${installCommands}\n\`\`\``;
+    readme = updateSection(readme, 'INSTALL_SECTION', installSection);
+    
+    fs.writeFileSync(filePath, readme);
+  }
+}
+
+/**
+ * Helper to replace content between markers
+ */
+function updateSection(content: string, key: string, newContent: string): string {
+  const startMarker = `<!-- ${key}_START -->`;
+  const endMarker = `<!-- ${key}_END -->`;
+  const startIdx = content.indexOf(startMarker);
+  const endIdx = content.indexOf(endMarker);
+
+  if (startIdx === -1 || endIdx === -1) return content;
+  
+  return content.slice(0, startIdx + startMarker.length) + 
+         '\n' + newContent + '\n' + 
+         content.slice(endIdx);
 }

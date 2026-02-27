@@ -20,5 +20,5 @@ document.addEventListener('astro:page-load', () => {
   }
 
   // Setup interactions (handles searchManager being null)
-  setupUIInteractions(searchManager as any);
+  setupUIInteractions(searchManager);
 });

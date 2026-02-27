@@ -13,6 +13,7 @@ const skillUrl = `${import.meta.env.BASE_URL}/skills/${skill.id}`;
 {isPersonal ? (
   <a 
     href={skillUrl}
+    data-type={skill.data.type}
     class="skill-card group bg-white border border-notebook-decor rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-left w-full block relative transition-all duration-300 ease-out transform-gpu hover:shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] active:scale-[0.97] active:shadow-inner"
   >
     <div class="p-5 md:p-6 flex items-start gap-4 h-full">
@@ -38,6 +39,7 @@ const skillUrl = `${import.meta.env.BASE_URL}/skills/${skill.id}`;
   </a>
 ) : (
   <div 
+    data-type={skill.data.type}
     class="skill-card group bg-white border border-notebook-decor rounded-xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] text-left w-full block relative transition-all duration-300 ease-out transform-gpu hover:shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] active:scale-[0.97] active:shadow-inner"
   >
     <div class="p-5 md:p-6 flex items-start gap-4 h-full">

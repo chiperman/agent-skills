@@ -1,6 +1,6 @@
 import type { SearchManager } from './search';
 
-export function setupUIInteractions(searchManager: SearchManager) {
+export function setupUIInteractions(searchManager: SearchManager | null) {
   const backToTopBtn = document.getElementById('back-to-top');
   const searchInput = document.getElementById('skill-search') as HTMLInputElement;
   const clearBtn = document.getElementById('clear-search');
