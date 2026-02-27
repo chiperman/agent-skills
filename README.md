@@ -38,10 +38,10 @@ Install skills directly using [Skills CLI](https://skills.sh):
 
 <!-- INSTALL_SECTION_START -->
 ```bash
-# Install this collection (includes all local copies)
+# Install this collection
 npx skills add https://github.com/chiperman/agent-skills
 
-# OR install specific skills from their official sources (Recommended for latest updates)
+# Install specific skills
 npx skills add https://github.com/chiperman/agent-skills --skill git-commit
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/anthropics/skills --skill frontend-design

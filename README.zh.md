@@ -38,10 +38,10 @@
 
 <!-- INSTALL_SECTION_START -->
 ```bash
-# 安装此集合（包含所有本地副本）
+# 安装此集合
 npx skills add https://github.com/chiperman/agent-skills
 
-# 或者从官方源安装特定技能（推荐以获取最新更新）
+# 安装特定技能
 npx skills add https://github.com/chiperman/agent-skills --skill git-commit
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/anthropics/skills --skill frontend-design
