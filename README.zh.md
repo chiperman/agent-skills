@@ -12,7 +12,7 @@
 <!-- SKILLS_TABLE_START -->
 | 技能 | 类别 | 描述 |
 | :--- | :--- | :--- |
-| **[git-commit](./skills/git-commit/SKILL.md)** | 个人 | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. |
+| **[git-commit](./skills/git-commit/SKILL.md)** | 个人 | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
 | **[find-skills](https://github.com/vercel-labs/skills)** | 参考 | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | 参考 | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
 | **[canvas-design](https://github.com/anthropics/skills)** | 参考 | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |

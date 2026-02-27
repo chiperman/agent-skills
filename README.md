@@ -12,7 +12,7 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 <!-- SKILLS_TABLE_START -->
 | Skill | Category | Description |
 | :--- | :--- | :--- |
-| **[git-commit](./skills/git-commit/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. |
+| **[git-commit](./skills/git-commit/SKILL.md)** | Personal | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
 | **[find-skills](https://github.com/vercel-labs/skills)** | Reference | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | Reference | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
 | **[canvas-design](https://github.com/anthropics/skills)** | Reference | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |
