@@ -1,14 +1,13 @@
-import type { ViewManager } from './view-manager';
 import type { SearchManager } from './search';
 
-export function setupUIInteractions(viewManager: ViewManager, searchManager: SearchManager) {
+export function setupUIInteractions(searchManager: SearchManager) {
   const backToTopBtn = document.getElementById('back-to-top');
   const searchInput = document.getElementById('skill-search') as HTMLInputElement;
   const clearBtn = document.getElementById('clear-search');
 
   // 1. Scroll Listener for Back to Top
   let scrollTicking = false;
-  window.addEventListener('scroll', () => {
+  const updateBackToTop = () => {
     if (!scrollTicking) {
       window.requestAnimationFrame(() => {
         if (window.scrollY > 400) {
@@ -20,15 +19,37 @@ export function setupUIInteractions(viewManager: ViewManager, searchManager: Sea
       });
       scrollTicking = true;
     }
-  });
+  };
+  
+  window.addEventListener('scroll', updateBackToTop);
+  
+  // Call it immediately to check if we are already scrolled down
+  updateBackToTop();
 
   backToTopBtn?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // 2. Global Click Delegation
-  document.addEventListener('click', async (e) => {
+  const handleGlobalClick = async (e: MouseEvent) => {
     const target = e.target as HTMLElement;
+
+    // Handle TOC Links
+    const tocLink = target.closest('.toc-link') as HTMLAnchorElement;
+    if (tocLink) {
+      e.preventDefault();
+      const targetId = tocLink.getAttribute('href')?.slice(1);
+      const targetEl = document.getElementById(targetId || '');
+      if (targetEl) {
+        window.scrollTo({
+          top: targetEl.offsetTop - 100, // Offset for top spacing
+          behavior: 'smooth'
+        });
+        // Update URL hash without reload
+        history.replaceState(null, '', `#${targetId}`);
+      }
+      return;
+    }
 
     // Handle Copy Raw Button
     const copyRawBtn = target.closest('.copy-raw-btn') as HTMLButtonElement;
@@ -64,12 +85,6 @@ export function setupUIInteractions(viewManager: ViewManager, searchManager: Sea
       return;
     }
 
-    // Handle Back to List Button
-    if (target.closest('.back-to-list')) {
-      viewManager.hideDetail();
-      return;
-    }
-
     // Handle Mobile TOC Toggle
     const tocToggle = target.closest('.mobile-toc-toggle') as HTMLButtonElement;
     if (tocToggle) {
@@ -87,38 +102,11 @@ export function setupUIInteractions(viewManager: ViewManager, searchManager: Sea
       }
       return;
     }
+  };
 
-    // Handle Skill Card Click
-    const card = target.closest('.skill-card') as HTMLElement;
-    if (card) {
-      if (target.closest('a')) return;
-      const type = card.dataset.type;
-      const name = card.dataset.skillName || '';
-      if (type === 'personal') {
-        viewManager.showDetail(name, card);
-      }
-      return;
-    }
-  });
+  document.addEventListener('click', handleGlobalClick);
 
-  // 3. Keyboard Accessibility
-  document.addEventListener('keydown', (e) => {
-    const target = e.target as HTMLElement;
-    const card = target.closest('.skill-card') as HTMLElement;
-    if (card && (e.key === 'Enter' || e.key === ' ')) {
-      const type = card.dataset.type;
-      if (type === 'personal') {
-        e.preventDefault();
-        const name = card.dataset.skillName || '';
-        viewManager.showDetail(name, card);
-      }
-    }
-    if (e.key === 'Escape') {
-      viewManager.hideDetail();
-    }
-  });
-
-  // 4. Search Input
+  // 3. Search Input
   searchInput?.addEventListener('input', (e) => {
     searchManager.filterSkills((e.target as HTMLInputElement).value);
   });
@@ -128,35 +116,6 @@ export function setupUIInteractions(viewManager: ViewManager, searchManager: Sea
       searchInput.value = '';
       searchManager.filterSkills('');
       searchInput.focus();
-    }
-  });
-
-  // 5. Browser History Handling
-  window.addEventListener('popstate', (e) => {
-    const hash = window.location.hash.slice(1);
-    if (e.state?.skill) {
-      const trigger = document.querySelector(`[data-skill-name="${e.state.skill}"]`) as HTMLElement || document.body;
-      viewManager.showDetail(e.state.skill, trigger, true);
-    } else if (hash) {
-      const detailExists = document.getElementById(`detail-${hash}`);
-      if (detailExists) {
-        const trigger = document.querySelector(`[data-skill-name="${hash}"]`) as HTMLElement || document.body;
-        viewManager.showDetail(hash, trigger, true);
-      }
-    } else {
-      viewManager.hideDetail(true);
-    }
-  });
-
-  // 6. Initial Load Handle
-  window.addEventListener('load', () => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      const detail = document.getElementById(`detail-${hash}`);
-      if (detail) {
-        const trigger = document.querySelector(`[data-skill-name="${hash}"]`) as HTMLElement || document.body;
-        viewManager.showDetail(hash, trigger, true);
-      }
     }
   });
 }

@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SkillDetail from '../../components/SkillDetail.astro';
+
+export async function getStaticPaths() {
+  const skills = await getCollection('skills');
+  return skills.map(skill => ({
+    params: { id: skill.id },
+    props: { skill },
+  }));
+}
+
+const { skill } = Astro.props;
+---
+
+<Layout title={`${skill.data.name} | Agent Skills`} description={skill.data.description}>
+  <main class="max-w-7xl mx-auto pt-8 pb-32">
+    <SkillDetail skill={skill} />
+  </main>
+</Layout>
