@@ -12,6 +12,7 @@
 <!-- SKILLS_TABLE_START -->
 | 技能 | 类别 | 描述 |
 | :--- | :--- | :--- |
+| **[skill-manager](./skills/skill-manager/SKILL.md)** | 个人 | 专门用于自动化管理和注册本项目技能的元工具。支持个人技能登记与外部引用关联。 |
 | **[git-commit](./skills/git-commit/SKILL.md)** | 个人 | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
 | **[find-skills](https://github.com/vercel-labs/skills)** | 参考 | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | 参考 | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
@@ -43,6 +44,7 @@
 npx skills add https://github.com/chiperman/agent-skills
 
 # 安装特定技能
+npx skills add https://github.com/chiperman/agent-skills --skill skill-manager
 npx skills add https://github.com/chiperman/agent-skills --skill git-commit
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
 npx skills add https://github.com/anthropics/skills --skill frontend-design

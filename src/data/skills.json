@@ -1,5 +1,9 @@
 [
   {
+    "name": "skill-manager",
+    "type": "personal"
+  },
+  {
     "name": "git-commit",
     "type": "personal"
   },
