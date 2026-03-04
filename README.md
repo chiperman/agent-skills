@@ -28,6 +28,7 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 | **[tailwind-css-patterns](https://github.com/giuseppe-trisciuoglio/developer-kit)** | Reference | Build modern, responsive user interfaces using expert Tailwind CSS utility-first patterns and modern CSS best practices. |
 | **[ui-ux-pro-max](https://github.com/sickn33/antigravity-awesome-skills)** | Reference | Advanced UI/UX design intelligence featuring 50+ styles, 97 palettes, and 9 technology stacks for building professional interfaces. |
 | **[wcag-audit-patterns](https://github.com/wshobson/agents)** | Reference | Conduct WCAG 2.2 accessibility audits with automated and manual testing, providing remediation guidance for fixing violations and accessible design. |
+| **[web-haptics](https://github.com/lochie/web-haptics)** | Reference | Provides cross-platform haptic feedback for mobile web and PWAs, enabling native-feeling vibrations on both iOS and Android browsers. |
 <!-- SKILLS_TABLE_END -->
 
 ## Installation
@@ -58,6 +59,7 @@ npx skills add https://github.com/dammyjay93/interface-design --skill interface-
 npx skills add https://github.com/giuseppe-trisciuoglio/developer-kit --skill tailwind-css-patterns
 npx skills add https://github.com/sickn33/antigravity-awesome-skills --skill ui-ux-pro-max
 npx skills add https://github.com/wshobson/agents --skill wcag-audit-patterns
+npx skills add https://github.com/lochie/web-haptics --skill web-haptics
 ```
 <!-- INSTALL_SECTION_END -->
 
