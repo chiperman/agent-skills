@@ -5,7 +5,8 @@
   },
   {
     "name": "git-commit",
-    "type": "personal"
+    "type": "personal",
+    "description": "Comprehensive Git agent skill with mandatory Chinese commit messages. Combines strategic workflows and safety protocols."
   },
   {
     "name": "find-skills",
