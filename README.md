@@ -13,7 +13,7 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 | Skill | Category | Description |
 | :--- | :--- | :--- |
 | **[skill-manager](./.agents/skills/skill-manager/SKILL.md)** | Personal | 专门用于自动化管理和注册本项目技能的元工具。支持个人技能登记与外部引用关联。 |
-| **[git-commit](./.agents/skills/git-commit/SKILL.md)** | Personal | 综合性 Git 智能体技能，强制要求中文提交信息。结合战略工作流、严格的 Conventional Commits 标准和安全执行协议。以资深工程师的视角引导原子化、可验证且标准化的 Git 操作。 |
+| **[git-commit](./.agents/skills/git-commit/SKILL.md)** | Personal | 极简且严苛的 Git 提交指南。强制中文信息，严格遵循原子化、双 `-m` 结构及安全审计协议。 |
 | **[find-skills](https://github.com/vercel-labs/skills)** | Reference | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | Reference | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
 | **[canvas-design](https://github.com/anthropics/skills)** | Reference | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |
