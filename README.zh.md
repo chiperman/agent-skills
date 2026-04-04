@@ -12,13 +12,8 @@
 <!-- SKILLS_TABLE_START -->
 | 技能 | 类别 | 描述 |
 | :--- | :--- | :--- |
-<<<<<<< HEAD
-| **[skill-manager](./skills/skill-manager/SKILL.md)** | 个人 | 专门用于自动化管理和注册本项目技能的元工具。支持个人技能登记与外部引用关联。 |
-| **[git-commit](./skills/git-commit/SKILL.md)** | 个人 | 综合性 Git 智能体技能，强制要求中文提交信息。结合战略工作流、严格的 Conventional Commits 标准和安全执行协议。以资深工程师的视角引导原子化、可验证且标准化的 Git 操作。 |
-=======
 | **[skill-manager](./.agents/skills/skill-manager/SKILL.md)** | 个人 | 专门用于自动化管理和注册本项目技能的元工具。支持个人技能登记与外部引用关联。 |
-| **[git-commit](./.agents/skills/git-commit/SKILL.md)** | 个人 | A comprehensive Git agent skill combining strategic workflows, strict conventional commit standards, and safe execution protocols. Acts as a senior engineer to guide users through atomic, verifiable, and standardized git operations. |
->>>>>>> 4615c72 (feat(skill): 迁移 skills 目录至 .agents/skills 标准路径)
+| **[git-commit](./.agents/skills/git-commit/SKILL.md)** | 个人 | 综合性 Git 智能体技能，强制要求中文提交信息。结合战略工作流、严格的 Conventional Commits 标准和安全执行协议。以资深工程师的视角引导原子化、可验证且标准化的 Git 操作。 |
 | **[find-skills](https://github.com/vercel-labs/skills)** | 参考 | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
 | **[frontend-design](https://github.com/anthropics/skills)** | 参考 | Create distinctive, production-grade frontend interfaces with high design quality, creative code, and polished UI that avoids generic AI aesthetics. |
 | **[canvas-design](https://github.com/anthropics/skills)** | 参考 | Create beautiful visual art, posters, and static designs in PNG and PDF formats using professional design philosophy and original visual elements. |
