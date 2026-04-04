@@ -22,7 +22,7 @@ export default function prepareAssetsIntegration(): AstroIntegration {
       'astro:config:setup': async ({ config, logger }) => {
         const rootDir = fileURLToPath(config.root);
         const paths = {
-          skills: path.join(rootDir, 'skills'),
+          skills: path.join(rootDir, '.agents', 'skills'),
           publicDownloads: path.join(rootDir, 'public', 'downloads'),
           publicRaw: path.join(rootDir, 'public', 'raw'),
           publicApi: path.join(rootDir, 'public', 'api', 'skills'),
@@ -155,7 +155,7 @@ function syncReadmeFiles(skills: SkillMetadata[], rootDir: string, repoUrl: stri
     
     const tableRows = skills.map(s => {
       const isPersonal = s.type === 'personal';
-      const link = isPersonal ? `./skills/${s.name}/SKILL.md` : s.github_url;
+      const link = isPersonal ? `./.agents/skills/${s.name}/SKILL.md` : s.github_url;
       const category = isPersonal ? (isZh ? '个人' : 'Personal') : (isZh ? '参考' : 'Reference');
       return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
     }).join('\n');

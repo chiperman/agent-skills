@@ -11,9 +11,9 @@ description: 专门用于自动化管理和注册本项目技能的元工具。�
 当用户要求“添加”或“注册”一个技能时，请按以下逻辑处理：
 
 #### 场景 A：添加个人技能 (Personal Skill)
-- **前提条件**：`skills/` 目录下已存在对应名称的文件夹及 `SKILL.md`。
+- **前提条件**：`.agents/skills/` 目录下已存在对应名称的文件夹及 `SKILL.md`。
 - **操作步骤**：
-    1. 读取 `skills/[name]/SKILL.md` 获取元数据。
+    1. 读取 `.agents/skills/[name]/SKILL.md` 获取元数据。
     2. 在 `src/data/skills.json` 中追加：`{"name": "[name]", "type": "personal"}`。
 
 #### 场景 B：添加引用技能 (Reference Skill)
