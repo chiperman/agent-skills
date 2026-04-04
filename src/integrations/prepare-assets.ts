@@ -156,11 +156,10 @@ function syncReadmeFiles(skills: SkillMetadata[], rootDir: string, repoUrl: stri
     const tableRows = skills.map(s => {
       const category = (s.type === 'personal') ? (isZh ? '个人' : 'Personal') : (isZh ? '参考' : 'Reference');
       
-      // Determine link target based on physical file existence in the standardized path
+      // Securely determine link target: prioritize local paths, fallback to registry
       const localSkillPath = path.join('.agents/skills', s.name, 'SKILL.md');
       const hasLocalFile = fs.existsSync(path.join(rootDir, localSkillPath));
-      
-      let link = hasLocalFile ? `./${localSkillPath}` : (s.github_url || 'https://skills.sh');
+      const link = hasLocalFile ? `./${localSkillPath}` : (s.github_url || 'https://skills.sh');
       
       return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
     }).join('\n');
