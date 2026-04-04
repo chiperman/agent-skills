@@ -2,7 +2,7 @@
 
 English | [简体中文](./how-to-add-skills.zh.md)
 
-This repository uses a configuration-driven automated workflow. By modifying `src/data/skills.json` and the `skills/` directory, the system automatically generates website content, zip assets, AI-readable APIs, and updates the root `README.md`.
+This repository uses a configuration-driven automated workflow. By modifying `src/data/skills.json` and the `.agents/skills/` directory, the system automatically generates website content, zip assets, AI-readable APIs, and updates the root `README.md`.
 
 ---
 
@@ -11,9 +11,9 @@ This repository uses a configuration-driven automated workflow. By modifying `sr
 A Personal Skill is one where you write the complete `SKILL.md` instructions yourself.
 
 ### Step 1: Create Directory Structure
-Create a new folder under `skills/` in the project root with the same name as your skill.
+Create a new folder under `.agents/skills/` in the project root with the same name as your skill.
 ```bash
-mkdir -p skills/my-new-skill
+mkdir -p .agents/skills/my-new-skill
 ```
 
 ### Step 2: Write Skill Document
@@ -64,7 +64,7 @@ Edit `src/data/skills.json` directly and add the following configuration.
   "github_url": "https://github.com/someone/external-awesome-skill"
 }
 ```
-*Note: Reference skills do not require any files in the `skills/` directory.*
+*Note: Reference skills do not require any files in the `.agents/skills/` directory.*
 
 ---
 
@@ -73,7 +73,7 @@ Edit `src/data/skills.json` directly and add the following configuration.
 This project features a **fully automated CI/CD pipeline**. You don't need to run manual sync scripts anymore.
 
 ### The Workflow
-1. **Push Changes**: Simply commit and `git push` your changes to `src/data/skills.json` or the `skills/` directory.
+1. **Push Changes**: Simply commit and `git push` your changes to `src/data/skills.json` or the `.agents/skills/` directory.
 2. **Auto-Processing**: GitHub Actions will automatically:
    - Update the tables and commands in `README.md` and `README.zh.md`.
    - **Commit the README changes** back to the repository for you.

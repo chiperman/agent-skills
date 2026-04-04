@@ -2,7 +2,7 @@
 
 [English](./how-to-add-skills.md) | 简体中文
 
-本仓库采用配置驱动的自动化工作流。通过修改 `src/data/skills.json` 并配合 `skills/` 目录，系统会自动生成网页内容、压缩包资产、AI 可读 API 以及更新根目录的 `README.md`。
+本仓库采用配置驱动的自动化工作流。通过修改 `src/data/skills.json` 并配合 `.agents/skills/` 目录，系统会自动生成网页内容、压缩包资产、AI 可读 API 以及更新根目录的 `README.md`。
 
 ---
 
@@ -11,9 +11,9 @@
 自建技能是指由你亲自编写、包含完整 `SKILL.md` 指令的技能。
 
 ### 第一步：创建目录结构
-在项目根目录的 `skills/` 下新建一个与技能名一致的文件夹。
+在项目根目录的 `.agents/skills/` 下新建一个与技能名一致的文件夹。
 ```bash
-mkdir -p skills/my-new-skill
+mkdir -p .agents/skills/my-new-skill
 ```
 
 ### 第二步：编写技能文档
@@ -64,7 +64,7 @@ description: 这是一个描述技能核心功能的简短句子。
   "github_url": "https://github.com/someone/external-awesome-skill"
 }
 ```
-*注意：引用技能不需要在 `skills/` 目录下创建任何文件。*
+*注意：引用技能不需要在 `.agents/skills/` 目录下创建任何文件。*
 
 ---
 
@@ -73,7 +73,7 @@ description: 这是一个描述技能核心功能的简短句子。
 本项目配备了**全自动 CI/CD 流水线**。你不再需要手动运行同步脚本。
 
 ### 工作流
-1. **推送变更**：只需将对 `src/data/skills.json` 或 `skills/` 目录的修改提交并 `git push` 到 GitHub。
+1. **推送变更**：只需将对 `src/data/skills.json` 或 `.agents/skills/` 目录的修改提交并 `git push` 到 GitHub。
 2. **云端自动处理**：GitHub Actions 会自动执行以下操作：
    - 刷新 `README.md` 和 `README.zh.md` 中的技能表格与命令。
    - **自动将 README 的变更提交并推回仓库**（以 Bot 名义）。
