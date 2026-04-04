@@ -155,8 +155,11 @@ function syncReadmeFiles(skills: SkillMetadata[], rootDir: string, repoUrl: stri
     
     const tableRows = skills.map(s => {
       const isPersonal = s.type === 'personal';
-      const link = isPersonal ? `./.agents/skills/${s.name}/SKILL.md` : s.github_url;
       const category = isPersonal ? (isZh ? '个人' : 'Personal') : (isZh ? '参考' : 'Reference');
+      
+      // Fix potential broken links for references by providing a fallback URL
+      let link = isPersonal ? `./.agents/skills/${s.name}/SKILL.md` : (s.github_url || 'https://skills.sh');
+      
       return `| **[${s.name}](${link})** | ${category} | ${s.description} |`;
     }).join('\n');
     
