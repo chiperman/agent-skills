@@ -1,0 +1,51 @@
+---
+interface Props {
+  skillName: string;
+}
+
+const { skillName } = Astro.props;
+---
+
+<div class="skill-tabs w-full">
+  <div class="tabs-container">
+    <input type="radio" id="tab-instructions" name={`tabs-${skillName}`} class="hidden" checked />
+    <input type="radio" id="tab-files" name={`tabs-${skillName}`} class="hidden" />
+
+    <nav class="flex items-center gap-1 p-1 bg-notebook-base/50 backdrop-blur-md rounded-xl border border-notebook-decor/30 w-fit mb-8">
+      <label for="tab-instructions" class="tab-label px-4 py-2 text-xs font-bold uppercase tracking-widest text-notebook-secondary cursor-pointer rounded-lg transition-all hover:bg-white/50">
+        Instructions
+      </label>
+      <label for="tab-files" class="tab-label px-4 py-2 text-xs font-bold uppercase tracking-widest text-notebook-secondary cursor-pointer rounded-lg transition-all hover:bg-white/50">
+        Files
+      </label>
+    </nav>
+
+    <div class="tab-content" id="content-instructions">
+      <slot name="instructions" />
+    </div>
+    <div class="tab-content hidden" id="content-files">
+      <slot name="files" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .skill-tabs input#tab-instructions:checked ~ nav label[for="tab-instructions"],
+  .skill-tabs input#tab-files:checked ~ nav label[for="tab-files"] {
+    background: white;
+    color: var(--notebook-interactive);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .skill-tabs input#tab-instructions:checked ~ #content-instructions {
+    display: block;
+  }
+  .skill-tabs input#tab-files:checked ~ #content-files {
+    display: block;
+  }
+  
+  /* Reset default instruction display when files is checked */
+  .skill-tabs input#tab-files:checked ~ #content-instructions {
+    display: none;
+  }
+</style>

@@ -1,0 +1,85 @@
+import CodePreview from './CodePreview.astro';
+
+interface FileItem {
+  path: string;
+  content?: string;
+  isBinary: boolean;
+}
+
+interface Props {
+  files: Record<string, FileItem[]>;
+}
+
+const { files } = Astro.props;
+const categories = [
+  { id: 'scripts', label: 'Scripts', icon: 'M12 18h.01M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z' },
+  { id: 'resources', label: 'Resources', icon: 'M20 7h-9l-1-1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z' },
+  { id: 'examples', label: 'Examples', icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z' },
+  { id: 'others', label: 'Others', icon: 'M4 6h16M4 12h16M4 18h7' }
+];
+---
+
+<div class="file-explorer space-y-12">
+  {categories.map(cat => {
+    const catFiles = files?.[cat.id] || [];
+    if (catFiles.length === 0) return null;
+
+    return (
+      <section>
+        <h3 class="text-sm font-black text-notebook-secondary uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-50">
+            <path d={cat.icon} />
+          </svg>
+          {cat.label}
+        </h3>
+        
+        <div class="grid grid-cols-1 gap-4">
+          {catFiles.map(file => (
+            <div class="file-item bg-white/50 border border-notebook-decor/40 rounded-xl overflow-hidden transition-all hover:border-notebook-interactive/30 hover:shadow-sm">
+              <details class="group">
+                <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none">
+                  <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary group-open:text-notebook-interactive transition-colors">
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <span class="text-sm font-semibold text-notebook-ink font-mono">{file.path}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    {file.isBinary ? (
+                      <span class="text-[10px] font-bold text-notebook-secondary bg-notebook-base px-2 py-0.5 rounded uppercase">Binary</span>
+                    ) : (
+                      <span class="text-[10px] font-bold text-notebook-interactive bg-notebook-interactive/5 px-2 py-0.5 rounded uppercase">Source</span>
+                    )}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-notebook-secondary group-open:rotate-180 transition-transform duration-300">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </div>
+                </summary>
+                
+                {!file.isBinary && file.content && (
+                  <div class="px-5 pb-5 pt-0 border-t border-notebook-decor/20 bg-notebook-base/10">
+                     <div class="mt-4">
+                        <CodePreview code={file.content} filename={file.path} />
+                     </div>
+                  </div>
+                )}
+                {file.isBinary && (
+                  <div class="px-5 pb-5 pt-0 text-center py-8 text-notebook-secondary italic text-xs">
+                    Binary file content cannot be previewed.
+                  </div>
+                )}
+              </details>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

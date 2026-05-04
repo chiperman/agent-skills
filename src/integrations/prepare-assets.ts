@@ -6,6 +6,20 @@ import { globSync } from 'glob';
 import matter from 'gray-matter';
 import { fileURLToPath } from 'url';
 
+/**
+ * Simple binary check based on NULL byte and common extensions
+ */
+function isBinaryFile(filePath: string): boolean {
+  const BINARY_EXTENSIONS = new Set(['.zip', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.pdf', '.exe', '.dll', '.so', '.dylib']);
+  if (BINARY_EXTENSIONS.has(path.extname(filePath).toLowerCase())) {
+    return true;
+  }
+  
+  const buffer = fs.readFileSync(filePath);
+  return buffer.slice(0, 1024).includes(0);
+}
+
+
 interface SkillMetadata {
   name: string;
   type: 'personal' | 'reference';
@@ -103,6 +117,28 @@ function processSkill(skill: SkillMetadata, paths: any, logger: any): SkillMetad
 
       // Copy Raw
       fs.copySync(skillMdPath, path.join(paths.publicRaw, `${name}.md`));
+
+      // Collect all files for display
+      const allFiles: any[] = [];
+      skillFiles.forEach(file => {
+        const filePath = path.join(skillDirPath, file);
+        if (fs.statSync(filePath).isFile() && file !== 'SKILL.md') {
+          const isBinary = isBinaryFile(filePath);
+          allFiles.push({
+            path: file,
+            content: isBinary ? null : fs.readFileSync(filePath, 'utf8'),
+            isBinary
+          });
+        }
+      });
+
+      // Group by category
+      frontmatter.files = {
+        scripts: allFiles.filter(f => f.path.startsWith('scripts/')),
+        resources: allFiles.filter(f => f.path.startsWith('resources/')),
+        examples: allFiles.filter(f => f.path.startsWith('examples/')),
+        others: allFiles.filter(f => !f.path.startsWith('scripts/') && !f.path.startsWith('resources/') && !f.path.startsWith('examples/'))
+      };
     }
   }
 

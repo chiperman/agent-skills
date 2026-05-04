@@ -1,0 +1,96 @@
+---
+import { Code } from 'astro:components';
+
+interface Props {
+  code: string;
+  lang?: string;
+  filename: string;
+}
+
+const { code, lang, filename } = Astro.props;
+
+// Determine language from filename if not provided
+function getLanguageFromFilename(filename: string): string {
+  const extension = filename.split('.').pop()?.toLowerCase();
+  const LANG_MAP: Record<string, string> = {
+    js: 'javascript',
+    ts: 'typescript',
+    py: 'python',
+    sh: 'bash',
+    json: 'json',
+    md: 'markdown',
+    yaml: 'yaml',
+    yml: 'yaml',
+    html: 'html',
+    css: 'css'
+  };
+  return extension ? (LANG_MAP[extension] || 'text') : 'text';
+}
+
+const displayLang = lang || getLanguageFromFilename(filename);
+---
+
+<div class="code-preview group relative">
+  <div class="flex items-center justify-between px-4 py-2 bg-notebook-base border-x border-t border-notebook-decor/40 rounded-t-lg">
+    <div class="flex items-center gap-2">
+      <div class="flex gap-1.5">
+        <div class="size-2.5 rounded-full bg-red-400/20 group-hover:bg-red-400/40 transition-colors"></div>
+        <div class="size-2.5 rounded-full bg-amber-400/20 group-hover:bg-amber-400/40 transition-colors"></div>
+        <div class="size-2.5 rounded-full bg-green-400/20 group-hover:bg-green-400/40 transition-colors"></div>
+      </div>
+      <span class="text-[10px] font-bold text-notebook-secondary ml-2 uppercase tracking-widest">{displayLang}</span>
+    </div>
+    <button 
+      class="copy-code-btn p-1.5 rounded-md hover:bg-white/80 text-notebook-secondary hover:text-notebook-interactive transition-all active:scale-90"
+      data-code={code}
+      title="Copy Code"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+    </button>
+  </div>
+  <div class="shiki-container text-xs max-h-[500px] overflow-auto border border-notebook-decor/40 rounded-b-lg shadow-inner">
+    <Code code={code} lang={displayLang as any} theme="github-light" />
+  </div>
+</div>
+
+<script>
+  // Simple copy to clipboard logic
+  document.querySelectorAll('.copy-code-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = (btn as HTMLButtonElement).dataset.code;
+      if (code) {
+        navigator.clipboard.writeText(code);
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        setTimeout(() => {
+          btn.innerHTML = originalIcon;
+        }, 2000);
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  .shiki {
+    margin: 0 !important;
+    padding: 1.25rem !important;
+    background-color: #fafafa !important;
+    border: none !important;
+  }
+  .shiki code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    counter-reset: step;
+    counter-increment: step 0;
+  }
+  
+  .shiki code .line::before {
+    content: counter(step);
+    counter-increment: step;
+    width: 1rem;
+    margin-right: 1.5rem;
+    display: inline-block;
+    text-align: right;
+    color: rgba(0, 0, 0, 0.2);
+    user-select: none;
+  }
+</style>

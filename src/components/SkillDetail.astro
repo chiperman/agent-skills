@@ -2,6 +2,9 @@
 import { type CollectionEntry, render } from 'astro:content';
 import ActionButton from './ActionButton.astro';
 import InstallBox from './InstallBox.astro';
+import SkillTabs from './SkillTabs.astro';
+import FileExplorer from './FileExplorer.astro';
+
 
 interface Props {
   skill: CollectionEntry<'skills'>;
@@ -129,12 +132,25 @@ const hasContent = headings.length > 0 || (skill.body?.trim()?.length ?? 0) > 0;
         </nav>
       )}
 
-      <!-- Content -->
-      {hasContent && (
-        <article class="prose prose-notebook max-w-none">
-          <Content />
-        </article>
-      )}
+      <!-- Content with Tabs -->
+      <SkillTabs skillName={skill.data.name}>
+        <div slot="instructions">
+          {hasContent && (
+            <article class="prose prose-notebook max-w-none">
+              <Content />
+            </article>
+          )}
+        </div>
+        <div slot="files">
+          {skill.data.files ? (
+            <FileExplorer files={skill.data.files as any} />
+          ) : (
+            <div class="py-20 text-center text-notebook-secondary italic">
+              No additional files found for this skill.
+            </div>
+          )}
+        </div>
+      </SkillTabs>
     </div>
 
     <!-- Right Column - Spacer to ensure center alignment -->

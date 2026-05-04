@@ -1,5 +1,10 @@
 [
   {
+    "name": "longbridge-invest-analysis",
+    "type": "personal",
+    "description": "自动化获取长桥美股投资周报数据并生成深度分析报告。"
+  },
+  {
     "name": "skill-manager",
     "type": "personal"
   },
