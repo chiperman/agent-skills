@@ -3,7 +3,6 @@ import json
 import os
 import subprocess
 import argparse
-import shlex
 from datetime import datetime, timedelta
 
 try:
@@ -14,12 +13,12 @@ except ImportError:
 
 DATA_DIR = ".invest-data"
 
-def run_command(cmd):
+def run_command(cmd_list):
     try:
-        result = subprocess.run(shlex.split(cmd), check=True, capture_output=True, text=True)
+        result = subprocess.run(cmd_list, check=True, capture_output=True, text=True)
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error running command {cmd}: {e}")
+        print(f"Error running command {' '.join(cmd_list)}: {e}")
         return None
 
 def get_last_friday():
@@ -75,7 +74,7 @@ def fetch_data(start_date=None, end_date=None):
     benchmark_data = {}
     for b in benchmarks:
         print(f"Fetching benchmark {b}...")
-        klines = run_command(f"longbridge kline {b} --count 200 --format json")
+        klines = run_command(["longbridge", "kline", b, "--count", "200", "--format", "json"])
         if klines:
             data = calculate_indicators(json.loads(klines))
             benchmark_data[b] = data
@@ -84,26 +83,30 @@ def fetch_data(start_date=None, end_date=None):
 
     # 2. Portfolio & News & Kline & Metrics
     print("Fetching portfolio...")
-    portfolio_json = run_command("longbridge portfolio --format json")
+    portfolio_json = run_command(["longbridge", "portfolio", "--format", "json"])
     if portfolio_json:
         with open(os.path.join(date_dir, "portfolio.json"), "w") as f:
             f.write(portfolio_json)
         
-        p_data = json.loads(portfolio_json)
-        symbols = [h['symbol'] for h in p_data.get('holdings', [])]
+        try:
+            p_data = json.loads(portfolio_json)
+            symbols = [h['symbol'] for h in p_data.get('holdings', [])]
+        except Exception as e:
+            print(f"Error parsing portfolio data: {e}")
+            symbols = []
         for symbol in symbols:
             try:
                 # News
                 if not is_option(symbol):
                     print(f"Fetching news for {symbol}...")
-                    news = run_command(f"longbridge news {symbol} --count 10 --format json")
+                    news = run_command(["longbridge", "news", symbol, "--count", "10", "--format", "json"])
                     if news:
                         with open(os.path.join(news_dir, f"{symbol}.json"), "w") as f:
                             f.write(news)
                 
                 # Kline (200 for indicators)
                 print(f"Fetching kline for {symbol}...")
-                klines = run_command(f"longbridge kline {symbol} --count 200 --format json")
+                klines = run_command(["longbridge", "kline", symbol, "--count", "200", "--format", "json"])
                 if klines:
                     data = calculate_indicators(json.loads(klines))
                     with open(os.path.join(kline_dir, f"{symbol}.json"), "w") as f:
@@ -111,12 +114,12 @@ def fetch_data(start_date=None, end_date=None):
                 
                 # Metrics (calc-index & capital flow)
                 print(f"Fetching metrics for {symbol}...")
-                idx = run_command(f"longbridge calc-index {symbol} --format json")
+                idx = run_command(["longbridge", "calc-index", symbol, "--format", "json"])
                 if idx:
                     with open(os.path.join(metrics_dir, f"{symbol}_idx.json"), "w") as f:
                         f.write(idx)
                 
-                cap = run_command(f"longbridge capital {symbol} --flow --format json")
+                cap = run_command(["longbridge", "capital", symbol, "--flow", "--format", "json"])
                 if cap:
                     with open(os.path.join(metrics_dir, f"{symbol}_cap.json"), "w") as f:
                         f.write(cap)
@@ -126,14 +129,14 @@ def fetch_data(start_date=None, end_date=None):
 
     # 3. Orders
     print("Fetching order history...")
-    orders_json = run_command(f"longbridge order --history --start {start_date} --end {end_date} --format json")
+    orders_json = run_command(["longbridge", "order", "--history", "--start", start_date, "--end", end_date, "--format", "json"])
     if orders_json:
         with open(os.path.join(date_dir, "orders.json"), "w") as f:
             f.write(orders_json)
 
     # 4. Market Temp
     print("Fetching US market temperature...")
-    market_temp = run_command("longbridge market-temp US --format json")
+    market_temp = run_command(["longbridge", "market-temp", "US", "--format", "json"])
     if market_temp:
         with open(os.path.join(date_dir, "market_temp.json"), "w") as f:
             f.write(market_temp)
