@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投资周报 Pro - {{date_range}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent-color: #3b82f6;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --positive: #10b981;
+            --negative: #ef4444;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 60px; }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-value { font-size: 2.5rem; font-weight: 600; }
+        .positive { color: var(--positive); }
+        .negative { color: var(--negative); }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: var(--text-muted); padding: 12px; border-bottom: 1px solid var(--glass-border); }
+        td { padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>投资周报 Pro</h1>
+            <p style="color: var(--text-muted)">{{date_range}} • Powered by Longbridge Analysis V2</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>资产概览</h2>
+                <div class="stat-value">{{total_asset}}</div>
+                <div style="margin-top: 10px;">
+                    <span class="{{pl_class}}">{{total_pl}}</span>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">本周盈亏</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>基准对比 (vs QQQ)</h2>
+                <div class="stat-value {{alpha_class}}">{{relative_perf}}</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">相对超额收益</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>持仓个股技术分析</h2>
+            {{holdings_analysis_sections}}
+        </div>
+
+        <div class="card">
+            <h2>持仓明细 & 财务指标</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>代码</th>
+                        <th>名称</th>
+                        <th>盈亏</th>
+                        <th>PE (TTM)</th>
+                        <th>PB</th>
+                        <th>换手率</th>
+                        <th>资金动向</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{holdings_rows_v2}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(0,0,0,0) 100%);">
+            <h2>AI 深度策略反思</h2>
+            <div style="white-space: pre-line;">{{ai_analysis}}</div>
+        </div>
+
+        <script>
+            function initChart(containerId, klineData, markers = []) {
+                const chartOptions = {
+                    layout: {
+                        background: { color: '#050505' },
+                        textColor: '#a0a0a0',
+                    },
+                    grid: {
+                        vertLines: { color: 'rgba(255,255,255,0.05)' },
+                        horzLines: { color: 'rgba(255,255,255,0.05)' },
+                    },
+                    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+                    rightPriceScale: { borderColor: 'rgba(255,255,255,0.1)' },
+                    timeScale: { borderColor: 'rgba(255,255,255,0.1)' },
+                };
+
+                const container = document.getElementById(containerId);
+                const chart = LightweightCharts.createChart(container, chartOptions);
+                const candlestickSeries = chart.addCandlestickSeries({
+                    upColor: '#10b981', downColor: '#ef4444', 
+                    borderUpColor: '#10b981', borderDownColor: '#ef4444',
+                    wickUpColor: '#10b981', wickDownColor: '#ef4444',
+                });
+
+                const formattedData = klineData.map(d => ({
+                    time: d.time.split(' ')[0],
+                    open: parseFloat(d.open),
+                    high: parseFloat(d.high),
+                    low: parseFloat(d.low),
+                    close: parseFloat(d.close)
+                }));
+
+                candlestickSeries.setData(formattedData);
+
+                // Add MAs
+                const maColors = { ma5: '#fff', ma20: '#3b82f6', ma120: '#f59e0b', ma200: '#8b5cf6' };
+                ['ma5', 'ma20', 'ma120', 'ma200'].forEach(key => {
+                    const lineSeries = chart.addLineSeries({ color: maColors[key], lineWidth: 1, title: key.toUpperCase() });
+                    lineSeries.setData(klineData.filter(d => d[key] > 0).map(d => ({
+                        time: d.time.split(' ')[0],
+                        value: d[key]
+                    })));
+                });
+
+                if (markers.length > 0) {
+                    candlestickSeries.setMarkers(markers);
+                }
+
+                chart.timeScale().fitContent();
+            }
+
+            // Data injection will happen here via agent
+            {{chart_init_scripts}}
+        </script>
+
+        <footer style="text-align: center; margin-top: 60px; color: var(--text-muted); font-size: 0.8rem;">
+            Generated by Longbridge Investment Agent V2 • Antigravity
+        </footer>
+    </div>
+</body>
+</html>
