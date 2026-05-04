@@ -12,6 +12,7 @@ A collection of high-quality AI agent skills, designed to enhance development wo
 <!-- SKILLS_TABLE_START -->
 | Skill | Category | Description |
 | :--- | :--- | :--- |
+| **[longbridge-invest-analysis-us](https://github.com/chiperman/agent-skills)** | Personal | 自动化获取长桥美股投资周报数据并生成深度分析报告。V2 版本支持 QQQ/VOO 标杆对比、MA/EMA 技术指标、财务指数及资金流向分析。专注于多维市场分析和专业视觉呈现。 |
 | **[skill-manager](./.agents/skills/skill-manager/SKILL.md)** | Personal | 专门用于自动化管理和注册本项目技能的元工具。支持个人技能登记与外部引用关联。 |
 | **[git-commit](./.agents/skills/git-commit/SKILL.md)** | Personal | 极简且严苛的 Git 提交指南。强制中文信息，严格遵循原子化、双 `-m` 结构及安全审计协议。 |
 | **[find-skills](https://github.com/vercel-labs/skills)** | Reference | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", or express interest in extending capabilities. |
@@ -44,6 +45,7 @@ Install skills directly using [Skills CLI](https://skills.sh):
 npx skills add https://github.com/chiperman/agent-skills
 
 # Install specific skills
+npx skills add https://github.com/chiperman/agent-skills --skill longbridge-invest-analysis
 npx skills add https://github.com/chiperman/agent-skills --skill skill-manager
 npx skills add https://github.com/chiperman/agent-skills --skill git-commit
 npx skills add https://github.com/vercel-labs/skills --skill find-skills
