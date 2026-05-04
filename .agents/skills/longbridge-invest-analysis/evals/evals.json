@@ -1,0 +1,17 @@
+{
+  "skill_name": "longbridge-invest-analysis",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "分析我本周投资操作，并生成一份投资周报。我需要看到持仓、盈亏情况以及相关的市场热度和新闻。",
+      "expected_output": "Agent 应该运行 fetch_weekly_data.py 脚本获取数据，并生成 Markdown 和 HTML 格式的分析报告。",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "总结一下我这周的表现，我记得周三买了一些股票，帮我看看现在情况怎么样，顺便生成一个 HTML 报告发给我。",
+      "expected_output": "Agent 应该识别到本周投资回顾的意图，获取本周交易记录和当前持仓，并输出包含 AI 分析的 HTML 页面。",
+      "files": []
+    }
+  ]
+}
