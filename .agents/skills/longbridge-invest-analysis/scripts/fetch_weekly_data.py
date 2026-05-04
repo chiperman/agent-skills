@@ -3,18 +3,20 @@ import json
 import os
 import subprocess
 import argparse
+import shlex
 from datetime import datetime, timedelta
 
 try:
     import pandas as pd
 except ImportError:
     pd = None
+    print("Warning: pandas is not installed. Technical indicators (MA/EMA) will not be calculated.")
 
 DATA_DIR = ".invest-data"
 
 def run_command(cmd):
     try:
-        result = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True)
+        result = subprocess.run(shlex.split(cmd), check=True, capture_output=True, text=True)
         return result.stdout
     except subprocess.CalledProcessError as e:
         print(f"Error running command {cmd}: {e}")
@@ -87,10 +89,10 @@ def fetch_data(start_date=None, end_date=None):
         with open(os.path.join(date_dir, "portfolio.json"), "w") as f:
             f.write(portfolio_json)
         
-        try:
-            p_data = json.loads(portfolio_json)
-            symbols = [h['symbol'] for h in p_data.get('holdings', [])]
-            for symbol in symbols:
+        p_data = json.loads(portfolio_json)
+        symbols = [h['symbol'] for h in p_data.get('holdings', [])]
+        for symbol in symbols:
+            try:
                 # News
                 if not is_option(symbol):
                     print(f"Fetching news for {symbol}...")
@@ -119,8 +121,8 @@ def fetch_data(start_date=None, end_date=None):
                     with open(os.path.join(metrics_dir, f"{symbol}_cap.json"), "w") as f:
                         f.write(cap)
                         
-        except Exception as e:
-            print(f"Error processing symbols: {e}")
+            except Exception as e:
+                print(f"Error processing symbol {symbol}: {e}")
 
     # 3. Orders
     print("Fetching order history...")
